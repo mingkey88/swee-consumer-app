@@ -16,13 +16,22 @@ Swee revolutionizes the beauty service booking experience by eliminating high-pr
 
 ## 🚀 Features
 
-### Core Features
+### Consumer Features
 - **Smart Search & Discovery**: AI-enhanced search with location-based results
 - **Category-Based Browsing**: 6 main service categories
 - **Personalized Recommendations**: Tailored matches based on user preferences
 - **Real-Time Booking**: Instant appointment scheduling
 - **Rewards System**: Points-based loyalty program
 - **Dark/Light Mode**: Full theme support
+
+### Merchant SaaS Platform ✨ NEW!
+- **Business Dashboard**: KPIs, trust score, and analytics
+- **Profile Management**: Business information and trust score tracking
+- **Service Management**: CRUD operations for service offerings
+- **Calendar View**: Appointment and booking management
+- **Payment Analytics**: Revenue tracking with escrow protection
+- **Role-Based Authentication**: Secure merchant access
+- **Responsive Design**: Mobile-optimized merchant interface
 
 ### Service Categories
 1. **Hair & Beauty** 💇‍♀️ - Salons, barbershops, styling
@@ -74,6 +83,13 @@ swee/
 │   │   ├── admin/             # Admin dashboard pages
 │   │   ├── auth/              # Authentication pages
 │   │   ├── booking/           # Booking flow pages
+│   │   ├── merchant/          # Merchant SaaS platform
+│   │   │   ├── auth/         # Merchant authentication
+│   │   │   ├── dashboard/    # Business dashboard
+│   │   │   ├── profile/      # Business profile management
+│   │   │   ├── services/     # Service management
+│   │   │   ├── calendar/     # Appointment calendar
+│   │   │   └── payments/     # Payment analytics
 │   │   ├── profile/           # User profile management
 │   │   ├── quiz/              # Onboarding quiz
 │   │   ├── rewards/           # Loyalty program
@@ -81,6 +97,7 @@ swee/
 │   │   └── page.tsx           # Landing page
 │   ├── components/            # Reusable UI components
 │   │   ├── ui/               # Base UI components
+│   │   ├── merchant/         # Merchant-specific components
 │   │   ├── AISearch.tsx      # AI assistant widget
 │   │   ├── AuthNavigation.tsx # Auth dropdown menu
 │   │   ├── MapView.tsx       # Interactive maps
@@ -139,8 +156,20 @@ swee/
    pnpm dev
    ```
 
-5. **Open your browser**
+5. **Seed demo data (optional)**
+   ```bash
+   # Seed consumer app data
+   npm run db:seed
+   
+   # Seed merchant demo data
+   npx tsx seed-merchant.ts
+   ```
+
+6. **Open your browser**
    Navigate to [http://localhost:3000](http://localhost:3000)
+   
+   **Merchant Portal**: [http://localhost:3000/merchant/auth/signin](http://localhost:3000/merchant/auth/signin)
+   - Demo login: `merchant@example.com` / `password123`
 
 ## 🎨 Design System
 
@@ -166,6 +195,7 @@ swee/
 
 ### User Roles
 - **Regular Users**: Browse, book, review services
+- **Merchants**: Business management, service configuration, calendar management
 - **Admin Users**: Platform management, analytics access
 
 ### Authentication Flow
@@ -219,17 +249,22 @@ npm run lint       # Check code quality
 
 ## 🔮 Roadmap
 
-### Phase 1: Foundation (Current)
+### Phase 1: Foundation ✅ COMPLETED
 - ✅ Core booking platform
 - ✅ Category-based search
 - ✅ AI assistant widget
 - ✅ Dark mode support
 - ✅ Responsive design
+- ✅ **Merchant SaaS Platform MVP**
 
 ### Phase 2: Enhancement (Next)
-- 🔄 **Merchant SaaS Platform** (Your next project!)
+- 🔄 **Advanced Merchant Features**
+  - Multi-location support
+  - Staff management
+  - Advanced analytics and reporting
+  - Customer communication tools
 - 📱 Real-time notifications
-- 💳 Payment integration (Stripe)
+- 💳 Payment integration (Stripe/PayNow)
 - 📍 Advanced location features
 - 🤖 Enhanced AI recommendations
 
@@ -278,26 +313,6 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 - **GitHub Issues**: Bug reports and feature requests
 - **Discussions**: Community support and ideas
 - **Discord**: Real-time community chat (planned)
-
----
-
-## 🚀 Next Steps: Merchant SaaS Platform
-
-After completing the consumer app, your next phase involves building the **Merchant SaaS Platform** that will include:
-
-### Merchant Dashboard Features
-- **Business Profile Management**
-- **Service & Pricing Configuration**
-- **Booking Management System**
-- **Analytics & Reports**
-- **Customer Communication Tools**
-- **Revenue & Payment Tracking**
-
-### Integration Points
-- **Shared Database**: Customer and booking data
-- **Real-time Sync**: Live availability updates
-- **Unified Design System**: Consistent branding
-- **API Gateway**: Secure data exchange
 
 ---
 
