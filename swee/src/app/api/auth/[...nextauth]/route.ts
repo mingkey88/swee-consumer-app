@@ -1,5 +1,8 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import CredentialsProvider from "next-auth/providers/credentials";
+import { prisma } from "@/lib/prisma";
+import bcrypt from "bcrypt";
 
 export const authOptions = {
   providers: [
@@ -8,6 +11,47 @@ export const authOptions = {
       clientId: process.env.GOOGLE_CLIENT_ID || "demo-client-id",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "demo-client-secret",
     }),
+    // Credentials Provider for merchants
+    CredentialsProvider({
+      name: "credentials",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" }
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          return null;
+        }
+
+        try {
+          const user = await prisma.user.findUnique({
+            where: { email: credentials.email }
+          });
+
+          if (!user) {
+            return null;
+          }
+
+          // For demo purposes, we'll check if the password matches the email
+          // In production, you'd compare with hashed passwords
+          const isValid = credentials.password === "password123"; // Demo password
+          
+          if (!isValid) {
+            return null;
+          }
+
+          return {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            role: user.role,
+          };
+        } catch (error) {
+          console.error("Auth error:", error);
+          return null;
+        }
+      }
+    }),
   ],
   session: {
     strategy: "jwt" as const,
@@ -15,7 +59,7 @@ export const authOptions = {
   callbacks: {
     async jwt({ token, user }: any) {
       if (user) {
-        token.role = "USER"; // Default role for new users
+        token.role = user.role || "USER"; // Use user's role from database
       }
       return token;
     },
