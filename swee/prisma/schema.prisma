@@ -1,0 +1,314 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  MERCHANT
+  ADMIN
+}
+
+enum Category {
+  BEAUTY
+  WELLNESS
+  FITNESS
+  HEALTHCARE
+  AUTOMOTIVE
+  HOME_SERVICES
+  EDUCATION
+  ENTERTAINMENT
+  OTHER
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String?   @unique
+  name          String?
+  role          Role      @default(USER)
+  image         String?
+  
+  // Swee Points System
+  points        Int       @default(0)
+  
+  // Profile & Preferences from Quiz
+  serviceType   String?   // Hair Services, Facial Treatments, Brows & Lashes
+  hairConcerns  Json?     // Array of hair concerns
+  facialConcerns Json?    // Array of facial concerns
+  browsLashesStyle String? // Natural, Defined, Bold, Trendy
+  budgetRange   String?   // Budget preference
+  frequency     String?   // How often they book
+  lifestyle     String?   // Lifestyle category
+  availability  Json?     // Preferred time slots
+  
+  // Hard-selling Protection Preferences
+  hardSellingExperience String? // User's experience with hard-selling
+  hardSellingProtection String? // How important protection is to them
+  
+  accounts      Account[]
+  sessions      Session[]
+  bookings      Booking[]
+  merchants     Merchant[]
+  quizAnswers   QuizAnswer[]
+  hardSellReports HardSellReport[]
+  pointsHistory PointsTransaction[]
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@map("users")
+}
+
+model Merchant {
+  id           Int       @id @default(autoincrement())
+  name         String
+  description  String?
+  address      String?
+  phone        String?
+  email        String?
+  website      String?
+  
+  owner        User      @relation(fields: [ownerId], references: [id])
+  ownerId      String
+  
+  services     Service[]
+  appointments Booking[]
+  
+  // Swee Trust Score System
+  trustScore   Float     @default(100.0)
+  
+  hardSellReports HardSellReport[]
+  pendingPayouts  PendingPayout[]
+  
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@map("merchants")
+}
+
+model Service {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  price       Int      // Price in cents
+  duration    Int?     // Duration in minutes
+  category    Category
+  isActive    Boolean  @default(true)
+  
+  // Swee Matching System
+  tags        ServiceTag[]
+  
+  merchant    Merchant @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+  merchantId  Int
+  
+  bookings    Booking[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("services")
+}
+
+model Booking {
+  id        String        @id @default(cuid())
+  datetime  DateTime
+  status    BookingStatus @default(PENDING)
+  notes     String?
+  
+  // Payment & Escrow
+  totalAmount Float?      // Total booking amount
+  currency    String      @default("SGD")
+  
+  user      User          @relation(fields: [userId], references: [id])
+  userId    String
+  
+  service   Service       @relation(fields: [serviceId], references: [id])
+  serviceId Int
+  
+  merchant  Merchant      @relation(fields: [merchantId], references: [id])
+  merchantId Int
+  
+  feedback  Feedback?
+  hardSellReports HardSellReport[]
+  pendingPayment  PendingPayment?
+  
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@map("bookings")
+}
+
+model Feedback {
+  id               Int     @id @default(autoincrement())
+  rating           Int     // 1-5 star rating
+  comment          String?
+  hardSellReported Boolean @default(false)
+  
+  booking          Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  bookingId        String  @unique
+  
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@map("feedback")
+}
+
+model QuizAnswer {
+  id            Int      @id @default(autoincrement())
+  email         String
+  questionId    String   // Question identifier (e.g., "services", "budget", "frequency")
+  answer        String   // User's answer
+  aiSummary     String?  // Optional AI-generated summary
+  
+  user          User?    @relation(fields: [userId], references: [id])
+  userId        String?  // Optional - link to user if they're authenticated
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("quiz_answers")
+}
+
+// Swee Points & Gamification System
+model PointsTransaction {
+  id          String   @id @default(cuid())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  
+  points      Int      // Positive for earned, negative for spent
+  reason      String   // "quiz_completed", "booking_made", "review_left", etc.
+  description String?  // Optional description
+  
+  createdAt   DateTime @default(now())
+
+  @@map("points_transactions")
+}
+
+// Hard-Selling Report System
+model HardSellReport {
+  id         String   @id @default(cuid())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  merchant   Merchant @relation(fields: [merchantId], references: [id])
+  merchantId Int
+  booking    Booking  @relation(fields: [bookingId], references: [id])
+  bookingId  String
+  
+  reported   Boolean  // Was hard selling reported?
+  note       String?  // Optional comment
+  
+  createdAt  DateTime @default(now())
+
+  @@map("hard_sell_reports")
+}
+
+// Escrow Payment System
+model PendingPayment {
+  id           String        @id @default(cuid())
+  booking      Booking       @relation(fields: [bookingId], references: [id])
+  bookingId    String        @unique
+  
+  amount       Float         // Amount held in escrow
+  currency     String        @default("SGD")
+  paymentMethod String       // "stripe", "paynow", etc.
+  stripePaymentId String?    // External payment reference
+  
+  status       PaymentStatus @default(PENDING)
+  
+  createdAt    DateTime      @default(now())
+  releasedAt   DateTime?     // When funds were released to merchant
+
+  @@map("pending_payments")
+}
+
+model PendingPayout {
+  id         String   @id @default(cuid())
+  merchant   Merchant @relation(fields: [merchantId], references: [id])
+  merchantId Int
+  
+  amount     Float
+  currency   String   @default("SGD")
+  status     String   @default("pending") // "pending", "processed", "failed"
+  
+  createdAt  DateTime @default(now())
+  processedAt DateTime?
+
+  @@map("pending_payouts")
+}
+
+// Service Tags for Matching Engine
+model ServiceTag {
+  id       String @id @default(cuid())
+  name     String @unique
+  category String // "hair_concern", "facial_concern", "style_preference"
+  
+  services Service[]
+
+  @@map("service_tags")
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  RELEASED
+  REFUNDED
+  FAILED
+}
+
+// NextAuth.js models
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
