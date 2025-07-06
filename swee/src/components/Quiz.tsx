@@ -9,8 +9,9 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
-import { ArrowLeft, ArrowRight, CheckCircle, Loader2, Sun, Moon } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CheckCircle, Loader2, Sun, Moon, Home } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
+import Link from 'next/link';
 
 interface QuizQuestion {
   id: string;
@@ -243,7 +244,13 @@ export default function Quiz() {
       <Card className="w-full max-w-2xl">
         <CardHeader>
           <div className="flex items-center justify-between mb-4">
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Welcome to Swee</h1>
+            <div className="flex items-center space-x-4">
+              <Link href="/" className="flex items-center space-x-2 text-gray-600 dark:text-gray-300 hover:text-orange-500 dark:hover:text-orange-400 transition-colors">
+                <ArrowLeft className="h-4 w-4" />
+                <span className="text-sm">Back to Home</span>
+              </Link>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Welcome to Swee</h1>
+            </div>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-500 dark:text-gray-400">
                 {isEmailStep ? 'Let\'s get started' : `${currentQuestion + 1} of ${visibleQuestions.length}`}

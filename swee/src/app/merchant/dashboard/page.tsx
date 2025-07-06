@@ -50,21 +50,37 @@ export default function MerchantDashboard() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
-      <header className="bg-white dark:bg-gray-800 shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                Swee Merchant
+      <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="flex justify-between items-center h-20">
+            <div className="flex items-center space-x-8">
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
+                Swee Business
               </h1>
+              <div className="hidden md:flex items-center space-x-1 bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
+                <div className="px-3 py-1 bg-white dark:bg-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-900 dark:text-white">
+                  Dashboard
+                </div>
+              </div>
             </div>
             <div className="flex items-center space-x-4">
-              <Button variant="outline" onClick={() => router.push('/merchant/profile')}>
-                <Settings className="w-4 h-4 mr-2" />
-                Settings
+              <Button variant="ghost" size="sm" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
+                <Settings className="w-4 h-4" />
               </Button>
-              <div className="text-sm text-gray-600 dark:text-gray-300">
-                Welcome, {session.user?.name}
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-gradient-to-r from-amber-600 to-orange-600 rounded-full flex items-center justify-center">
+                  <span className="text-white font-semibold text-sm">
+                    {session.user?.name?.charAt(0)}
+                  </span>
+                </div>
+                <div className="hidden md:block">
+                  <div className="text-sm font-medium text-gray-900 dark:text-white">
+                    {session.user?.name}
+                  </div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">
+                    Business Owner
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -72,151 +88,231 @@ export default function MerchantDashboard() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Stats Overview */}
+      <main className="max-w-7xl mx-auto px-6 lg:px-8 py-8">
+        {/* Welcome Banner */}
+        <div className="bg-gradient-to-r from-slate-600 to-slate-700 rounded-2xl p-6 mb-8 text-white">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-bold mb-2">Good morning, {session.user?.name?.split(' ')[0]}!</h2>
+              <p className="text-slate-200 opacity-90 mb-4">
+                Here's what's happening with your business today
+              </p>
+              <div className="flex items-center space-x-6">
+                <div className="text-center">
+                  <div className="text-2xl font-bold">5</div>
+                  <div className="text-sm text-slate-200 opacity-80">Today's appointments</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold">$340</div>
+                  <div className="text-sm text-slate-200 opacity-80">Today's revenue</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold">2</div>
+                  <div className="text-sm text-slate-200 opacity-80">New messages</div>
+                </div>
+              </div>
+            </div>
+            <div className="hidden lg:flex items-center space-x-4">
+              <Button 
+                variant="secondary" 
+                className="bg-white/20 hover:bg-white/30 text-white border-white/30"
+                onClick={() => router.push('/merchant/calendar')}
+              >
+                View Calendar
+              </Button>
+              <Button 
+                variant="secondary" 
+                className="bg-white/20 hover:bg-white/30 text-white border-white/30"
+                onClick={() => router.push('/merchant/services')}
+              >
+                Manage Services
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-              <DollarSign className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">$2,450</div>
-              <p className="text-xs text-muted-foreground">
-                +12.5% from last month
-              </p>
+          <Card className="border-0 shadow-sm hover:shadow-md transition-shadow bg-white dark:bg-gray-800">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 font-medium">Total Revenue</p>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">$2,450</p>
+                  <div className="flex items-center mt-2">
+                    <div className="flex items-center text-green-600 dark:text-green-400 text-sm">
+                      <TrendingUp className="w-4 h-4 mr-1" />
+                      <span>+12.5%</span>
+                    </div>
+                    <span className="text-gray-500 dark:text-gray-400 text-sm ml-2">vs last month</span>
+                  </div>
+                </div>
+                <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center">
+                  <DollarSign className="w-6 h-6 text-green-600 dark:text-green-400" />
+                </div>
+              </div>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Active Bookings</CardTitle>
-              <CalendarDays className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">23</div>
-              <p className="text-xs text-muted-foreground">
-                +3 from yesterday
-              </p>
+          <Card className="border-0 shadow-sm hover:shadow-md transition-shadow bg-white dark:bg-gray-800">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 font-medium">Active Bookings</p>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">23</p>
+                  <div className="flex items-center mt-2">
+                    <div className="flex items-center text-blue-600 dark:text-blue-400 text-sm">
+                      <TrendingUp className="w-4 h-4 mr-1" />
+                      <span>+3</span>
+                    </div>
+                    <span className="text-gray-500 dark:text-gray-400 text-sm ml-2">from yesterday</span>
+                  </div>
+                </div>
+                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
+                  <CalendarDays className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                </div>
+              </div>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Trust Score</CardTitle>
-              <Star className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">4.8</div>
-              <p className="text-xs text-muted-foreground">
-                Based on 127 reviews
-              </p>
+          <Card className="border-0 shadow-sm hover:shadow-md transition-shadow bg-white dark:bg-gray-800">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 font-medium">Trust Score</p>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">4.8</p>
+                  <div className="flex items-center mt-2">
+                    <div className="flex items-center text-yellow-600 dark:text-yellow-400 text-sm">
+                      <Star className="w-4 h-4 mr-1 fill-current" />
+                      <span>127 reviews</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-xl flex items-center justify-center">
+                  <Star className="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
+                </div>
+              </div>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Customers</CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">89</div>
-              <p className="text-xs text-muted-foreground">
-                +7 new this week
-              </p>
+          <Card className="border-0 shadow-sm hover:shadow-md transition-shadow bg-white dark:bg-gray-800">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 font-medium">Total Customers</p>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">89</p>
+                  <div className="flex items-center mt-2">
+                    <div className="flex items-center text-purple-600 dark:text-purple-400 text-sm">
+                      <TrendingUp className="w-4 h-4 mr-1" />
+                      <span>+7</span>
+                    </div>
+                    <span className="text-gray-500 dark:text-gray-400 text-sm ml-2">new this week</span>
+                  </div>
+                </div>
+                <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center">
+                  <Users className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                </div>
+              </div>
             </CardContent>
           </Card>
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          <Card className="hover:shadow-md transition-shadow cursor-pointer"
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <Card className="border-0 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer group bg-white dark:bg-gray-800 hover:scale-105"
                 onClick={() => router.push('/merchant/services')}>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <ShoppingBag className="w-5 h-5 mr-2" />
-                Manage Services
-              </CardTitle>
-              <CardDescription>
-                Add, edit, or remove your service offerings
-              </CardDescription>
-            </CardHeader>
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-4">
+                <div className="w-14 h-14 bg-gradient-to-r from-amber-600 to-orange-700 rounded-xl flex items-center justify-center group-hover:shadow-lg transition-shadow">
+                  <ShoppingBag className="w-7 h-7 text-white" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-lg text-gray-900 dark:text-white">Manage Services</h3>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm">Add, edit, or remove services</p>
+                </div>
+              </div>
+            </CardContent>
           </Card>
 
-          <Card className="hover:shadow-md transition-shadow cursor-pointer"
+          <Card className="border-0 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer group bg-white dark:bg-gray-800 hover:scale-105"
                 onClick={() => router.push('/merchant/calendar')}>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Clock className="w-5 h-5 mr-2" />
-                View Calendar
-              </CardTitle>
-              <CardDescription>
-                Manage your appointments and availability
-              </CardDescription>
-            </CardHeader>
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-4">
+                <div className="w-14 h-14 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center group-hover:shadow-lg transition-shadow">
+                  <Clock className="w-7 h-7 text-white" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-lg text-gray-900 dark:text-white">View Calendar</h3>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm">Manage appointments & availability</p>
+                </div>
+              </div>
+            </CardContent>
           </Card>
 
-          <Card className="hover:shadow-md transition-shadow cursor-pointer"
+          <Card className="border-0 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer group bg-white dark:bg-gray-800 hover:scale-105"
                 onClick={() => router.push('/merchant/payments')}>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <TrendingUp className="w-5 h-5 mr-2" />
-                Payments & Analytics
-              </CardTitle>
-              <CardDescription>
-                Track your earnings and business performance
-              </CardDescription>
-            </CardHeader>
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-4">
+                <div className="w-14 h-14 bg-gradient-to-r from-green-500 to-teal-600 rounded-xl flex items-center justify-center group-hover:shadow-lg transition-shadow">
+                  <TrendingUp className="w-7 h-7 text-white" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-lg text-gray-900 dark:text-white">Analytics</h3>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm">Track earnings & performance</p>
+                </div>
+              </div>
+            </CardContent>
           </Card>
         </div>
 
         {/* Recent Activity */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
-            <CardDescription>
-              Your latest bookings and business updates
-            </CardDescription>
+        <Card className="border-0 shadow-sm bg-white dark:bg-gray-800">
+          <CardHeader className="pb-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-xl font-bold text-gray-900 dark:text-white">Recent Activity</CardTitle>
+                <CardDescription className="text-gray-600 dark:text-gray-400">
+                  Your latest bookings and business updates
+                </CardDescription>
+              </div>
+              <Button variant="ghost" size="sm" className="text-gray-600 dark:text-gray-300">
+                View all
+              </Button>
+            </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-0">
             <div className="space-y-4">
-              <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
-                    <CalendarDays className="w-4 h-4 text-green-600 dark:text-green-400" />
-                  </div>
-                  <div>
-                    <p className="font-medium">New booking from Sarah Chen</p>
-                    <p className="text-sm text-muted-foreground">Hair Cut & Style - Tomorrow 2:00 PM</p>
-                  </div>
+              <div className="flex items-center space-x-4 p-4 bg-gray-50 dark:bg-gray-900/50 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors">
+                <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
+                  <CalendarDays className="w-6 h-6 text-green-600 dark:text-green-400" />
                 </div>
-                <div className="text-sm text-muted-foreground">2 hours ago</div>
+                <div className="flex-1">
+                  <h4 className="font-medium text-gray-900 dark:text-white">New booking from Sarah Chen</h4>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Hair Cut & Style • Tomorrow 2:00 PM</p>
+                </div>
+                <div className="text-sm text-gray-500 dark:text-gray-400">2h ago</div>
               </div>
 
-              <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">
-                    <DollarSign className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                  </div>
-                  <div>
-                    <p className="font-medium">Payment received</p>
-                    <p className="text-sm text-muted-foreground">$85.00 for Facial Treatment</p>
-                  </div>
+              <div className="flex items-center space-x-4 p-4 bg-gray-50 dark:bg-gray-900/50 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors">
+                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
+                  <DollarSign className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                 </div>
-                <div className="text-sm text-muted-foreground">5 hours ago</div>
+                <div className="flex-1">
+                  <h4 className="font-medium text-gray-900 dark:text-white">Payment received</h4>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">$85.00 for Facial Treatment</p>
+                </div>
+                <div className="text-sm text-gray-500 dark:text-gray-400">5h ago</div>
               </div>
 
-              <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-yellow-100 dark:bg-yellow-900 rounded-full flex items-center justify-center">
-                    <Star className="w-4 h-4 text-yellow-600 dark:text-yellow-400" />
-                  </div>
-                  <div>
-                    <p className="font-medium">New 5-star review</p>
-                    <p className="text-sm text-muted-foreground">From Maria Rodriguez</p>
-                  </div>
+              <div className="flex items-center space-x-4 p-4 bg-gray-50 dark:bg-gray-900/50 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors">
+                <div className="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center">
+                  <Star className="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
                 </div>
-                <div className="text-sm text-muted-foreground">1 day ago</div>
+                <div className="flex-1">
+                  <h4 className="font-medium text-gray-900 dark:text-white">New 5-star review</h4>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">From Maria Rodriguez</p>
+                </div>
+                <div className="text-sm text-gray-500 dark:text-gray-400">1d ago</div>
               </div>
             </div>
           </CardContent>

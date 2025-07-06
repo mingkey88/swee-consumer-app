@@ -28,7 +28,8 @@ export async function PUT(
       );
     }
 
-    const serviceId = parseInt(params.id);
+    const { id } = await params;
+    const serviceId = parseInt(id);
     const body = await request.json();
     const { title, description, price, duration, category, isActive } = body;
 
@@ -94,7 +95,8 @@ export async function DELETE(
       );
     }
 
-    const serviceId = parseInt(params.id);
+    const { id } = await params;
+    const serviceId = parseInt(id);
 
     // Verify service belongs to merchant
     const existingService = await prisma.service.findFirst({

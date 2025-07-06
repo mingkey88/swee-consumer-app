@@ -178,19 +178,23 @@ export default function MerchantServices() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
-      <header className="bg-white dark:bg-gray-800 shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <Link href="/merchant/dashboard" className="flex items-center text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white mr-4">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Dashboard
+      <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="flex items-center justify-between h-20">
+            <div className="flex items-center space-x-4">
+              <Link href="/merchant/dashboard">
+                <Button variant="ghost" size="sm" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Back to Dashboard
+                </Button>
               </Link>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                Services
-              </h1>
+              <div className="h-6 w-px bg-gray-300 dark:bg-gray-600"></div>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Service Management</h1>
             </div>
-            <Button onClick={() => setShowAddForm(true)}>
+            <Button 
+              onClick={() => setShowAddForm(true)}
+              className="bg-gradient-to-r from-orange-500 to-red-400 hover:from-orange-600 hover:to-red-500 text-white shadow-lg"
+            >
               <Plus className="w-4 h-4 mr-2" />
               Add Service
             </Button>

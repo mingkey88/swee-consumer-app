@@ -5,8 +5,9 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { Coins, Trophy, Gift, Star, Calendar, MessageCircle, Target, ArrowRight, Sun, Moon } from 'lucide-react';
+import { Coins, Trophy, Gift, Star, Calendar, MessageCircle, Target, ArrowRight, Sun, Moon, ArrowLeft, Home } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
+import Link from 'next/link';
 
 interface PointsTransaction {
   id: string;
@@ -179,21 +180,51 @@ export default function RewardsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+      {/* Navigation Header */}
+      <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 transition-colors duration-300">
+        <div className="max-w-7xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            {/* Left: Logo */}
+            <div className="flex items-center">
+              <Link href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
+                <div className="bg-gradient-to-r from-orange-500 to-red-400 text-white p-2 rounded-lg">
+                  <Coins className="h-6 w-6" />
+                </div>
+                <span className="text-xl font-bold bg-gradient-to-r from-orange-500 to-red-400 bg-clip-text text-transparent">
+                  Swee Rewards
+                </span>
+              </Link>
+            </div>
+
+            {/* Right: Back to Home and Dark Mode Toggle */}
+            <div className="flex items-center space-x-3">
+              <Link href="/">
+                <Button variant="ghost" size="sm" className="text-gray-600 dark:text-gray-300 hover:text-orange-500 dark:hover:text-orange-400">
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  Back to Home
+                </Button>
+              </Link>
+              
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={toggleDarkMode}
+                className="text-gray-600 dark:text-gray-300"
+              >
+                {darkMode ? (
+                  <Sun className="h-4 w-4" />
+                ) : (
+                  <Moon className="h-4 w-4" />
+                )}
+              </Button>
+            </div>
+          </div>
+        </div>
+      </header>
+
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Header */}
-        <div className="text-center mb-8 relative">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={toggleDarkMode}
-            className="absolute right-0 top-0"
-          >
-            {darkMode ? (
-              <Sun className="h-4 w-4" />
-            ) : (
-              <Moon className="h-4 w-4" />
-            )}
-          </Button>
+        <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 transition-colors duration-300">Swee Rewards</h1>
           <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">Earn points, unlock rewards, and get the most out of your beauty journey</p>
         </div>

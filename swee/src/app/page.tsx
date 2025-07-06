@@ -45,10 +45,20 @@ export default function Home() {
             <nav className="hidden md:flex space-x-6">
               <Link href="/search" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Browse</Link>
               <Link href="/rewards" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Rewards</Link>
-              <a href="#" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Business</a>
+              <Link href="/merchant/auth/signin" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Business</Link>
             </nav>
           </div>
           <div className="flex items-center space-x-4">
+            {/* Mobile Business Button */}
+            <Link 
+              href="/merchant/auth/signin" 
+              className="md:hidden"
+            >
+              <Button size="sm" variant="outline" className="text-purple-600 dark:text-purple-400 border-purple-200 dark:border-purple-800 hover:bg-purple-50 dark:hover:bg-purple-900/20">
+                Business
+              </Button>
+            </Link>
+            
             {/* Dark Mode Toggle */}
             <Button
               variant="ghost"
@@ -264,16 +274,17 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {[
             {
-              name: 'Glow Beauty Studio',
+              name: 'Bella Beauty Studio',
               category: 'Beauty Salon',
-              rating: 4.9,
-              reviews: 127,
-              price: 'From $45',
-              distance: '0.8 km away',
-              tags: ['Hair', 'Nails', 'Facial'],
+              rating: 4.8,
+              reviews: 1,
+              price: 'From $65',
+              distance: '0.3 km away',
+              tags: ['Hair', 'Facial', 'Brows'],
               image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80',
               searchCategory: 'Hair & Beauty',
-              searchQuery: 'beauty salon'
+              searchQuery: 'bella beauty studio',
+              id: 1 // Add ID to link to our seeded data
             },
             {
               name: 'ZenFit Wellness',
@@ -302,7 +313,7 @@ export default function Home() {
           ].map((business, index) => (
             <Link 
               key={index} 
-              href={`/search?category=${encodeURIComponent(business.searchCategory)}&query=${encodeURIComponent(business.searchQuery)}`}
+              href={business.id ? `/providers/${business.id}` : `/search?category=${encodeURIComponent(business.searchCategory)}&query=${encodeURIComponent(business.searchQuery)}`}
               className="block"
             >
               <Card className="group cursor-pointer border-0 shadow-md hover:shadow-xl dark:shadow-lg dark:hover:shadow-xl transition-all duration-300 overflow-hidden bg-white dark:bg-gray-800 dark:border-gray-700">
@@ -423,6 +434,47 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Business Call-to-Action Section */}
+      <section className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 py-16 transition-colors duration-300">
+        <div className="container mx-auto px-4 text-center">
+          <div className="max-w-3xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6">
+              Grow Your Beauty Business with Swee
+            </h2>
+            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8">
+              Join thousands of beauty professionals who trust Swee to connect them with quality clients. 
+              Our merchant platform helps you manage bookings, track payments, and build lasting customer relationships.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/merchant/auth/signup">
+                <Button size="lg" className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-3 text-lg font-semibold">
+                  Join as a Merchant
+                </Button>
+              </Link>
+              <Link href="/merchant/auth/signin">
+                <Button variant="outline" size="lg" className="border-purple-200 dark:border-purple-800 text-purple-700 dark:text-purple-300 hover:bg-purple-50 dark:hover:bg-purple-900/20 px-8 py-3 text-lg font-semibold">
+                  Access Dashboard
+                </Button>
+              </Link>
+            </div>
+            <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+              <div>
+                <div className="text-2xl font-bold text-purple-600 dark:text-purple-400 mb-2">Zero Commission</div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Keep 100% of your earnings</p>
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-purple-600 dark:text-purple-400 mb-2">Smart Matching</div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">AI connects you with ideal clients</p>
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-purple-600 dark:text-purple-400 mb-2">Easy Management</div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Streamlined booking & payments</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="bg-gray-900 dark:bg-gray-950 text-white py-16 transition-colors duration-300">
         <div className="container mx-auto px-4">
@@ -446,8 +498,8 @@ export default function Home() {
             <div>
               <h4 className="font-semibold mb-4">For Businesses</h4>
               <ul className="space-y-2 text-gray-400 dark:text-gray-500 transition-colors duration-300">
-                <li><a href="#" className="hover:text-white transition-colors">List Your Business</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Business Dashboard</a></li>
+                <li><Link href="/merchant/auth/signup" className="hover:text-white transition-colors">List Your Business</Link></li>
+                <li><Link href="/merchant/auth/signin" className="hover:text-white transition-colors">Business Dashboard</Link></li>
                 <li><a href="#" className="hover:text-white transition-colors">Pricing</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Resources</a></li>
               </ul>

@@ -54,6 +54,24 @@ interface ServiceProvider {
 
 const mockProviders: ServiceProvider[] = [
   {
+    id: '1',
+    name: 'Bella Beauty Studio',
+    category: 'Hair & Beauty',
+    rating: 4.8,
+    reviewCount: 324,
+    address: '123 Orchard Road, #02-45, Singapore 238858',
+    distance: '0.5 km',
+    priceRange: '$45 - $180',
+    nextAvailable: 'Today 2:30 PM',
+    image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
+    services: ['Hair Cut & Style', 'Hair Color', 'Highlights', 'Hair Treatment', 'Blowdry', 'Keratin Treatment', 'Hair Extensions', 'Bridal Hair'],
+    isOpen: true,
+    featured: true,
+    trustScore: 96.2,
+    lat: 1.304833,
+    lng: 103.831833
+  },
+  {
     id: 'hair-lounge-singapore',
     name: 'The Hair Lounge',
     category: 'Hair & Beauty',

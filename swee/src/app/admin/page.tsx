@@ -30,20 +30,14 @@ interface HardSellMetrics {
   }>;
 }
 
-interface AdminDashboardProps {
-  isAdmin?: boolean;
-}
-
-export default function AdminDashboard({ isAdmin = false }: AdminDashboardProps) {
+export default function AdminDashboard() {
   const [metrics, setMetrics] = useState<HardSellMetrics | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (isAdmin) {
-      fetchMetrics();
-    }
-  }, [isAdmin]);
+    fetchMetrics();
+  }, []);
 
   const fetchMetrics = async () => {
     try {
@@ -98,20 +92,6 @@ export default function AdminDashboard({ isAdmin = false }: AdminDashboardProps)
   };
 
   const displayMetrics = metrics || mockMetrics;
-
-  if (!isAdmin) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <Card className="w-full max-w-md">
-          <CardContent className="p-8 text-center">
-            <Shield className="h-12 w-12 text-red-500 mx-auto mb-4" />
-            <h2 className="text-xl font-bold text-gray-900 mb-2">Access Denied</h2>
-            <p className="text-gray-600">You don't have permission to access this page.</p>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
 
   if (loading) {
     return (

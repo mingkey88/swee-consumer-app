@@ -28,7 +28,8 @@ export async function PUT(
       );
     }
 
-    const bookingId = params.id;
+    const { id } = await params;
+    const bookingId = id;
     const body = await request.json();
     const { status } = body;
 
