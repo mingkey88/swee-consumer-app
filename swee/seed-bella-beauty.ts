@@ -6,21 +6,38 @@ const prisma = new PrismaClient()
 async function seedBellaBeautyStudio() {
   console.log('🌱 Seeding Bella Beauty Studio...')
 
-  // Create a merchant owner account
-  const merchantOwner = await prisma.user.create({
-    data: {
-      email: 'bella@bellabeauty.com',
+  // Create or update merchant owner account
+  const merchantOwner = await prisma.user.upsert({
+    where: { email: 'merchant@example.com' },
+    update: {
+      name: 'Bella Chen',
+      role: 'MERCHANT',
+    },
+    create: {
+      email: 'merchant@example.com',
       name: 'Bella Chen',
       role: 'MERCHANT',
       points: 0,
     },
   })
 
-  // Create Bella Beauty Studio merchant
-  const bellaBeautyStudio = await prisma.merchant.create({
-    data: {
+  // Create or update Bella Beauty Studio merchant
+  const bellaBeautyStudio = await prisma.merchant.upsert({
+    where: { 
+      ownerId: merchantOwner.id 
+    },
+    update: {
       name: 'Bella Beauty Studio',
-      description: 'Singapore\'s premier beauty destination offering personalized hair, facial, and aesthetic treatments. Our expert stylists and aestheticians are committed to enhancing your natural beauty with the latest techniques and premium products.',
+      description: 'Experience the future of beauty and wellness at Bella Beauty Studio. Nestled in the heart of Orchard Road, our cutting-edge facility offers a transformative approach to skincare, hair care, and aesthetic treatments. With state-of-the-art technology and personalized service, our expert team delivers unparalleled care and results. Immerse yourself in a sanctuary where science meets luxury, and let our skilled professionals elevate your beauty journey with precision and innovation. Discover the epitome of aesthetic excellence and redefine your radiance at Bella Beauty Studio.',
+      address: '123 Orchard Road, #02-45, Singapore 238858',
+      phone: '+65 6123 4567',
+      email: 'hello@bellabeauty.com',
+      website: 'https://bellabeauty.com',
+      trustScore: 4.8,
+    },
+    create: {
+      name: 'Bella Beauty Studio',
+      description: 'Experience the future of beauty and wellness at Bella Beauty Studio. Nestled in the heart of Orchard Road, our cutting-edge facility offers a transformative approach to skincare, hair care, and aesthetic treatments. With state-of-the-art technology and personalized service, our expert team delivers unparalleled care and results. Immerse yourself in a sanctuary where science meets luxury, and let our skilled professionals elevate your beauty journey with precision and innovation. Discover the epitome of aesthetic excellence and redefine your radiance at Bella Beauty Studio.',
       address: '123 Orchard Road, #02-45, Singapore 238858',
       phone: '+65 6123 4567',
       email: 'hello@bellabeauty.com',

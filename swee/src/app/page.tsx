@@ -281,7 +281,7 @@ export default function Home() {
               price: 'From $65',
               distance: '0.3 km away',
               tags: ['Hair', 'Facial', 'Brows'],
-              image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80',
+              image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80',
               searchCategory: 'Hair & Beauty',
               searchQuery: 'bella beauty studio',
               id: 1 // Add ID to link to our seeded data
