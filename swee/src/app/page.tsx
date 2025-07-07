@@ -81,12 +81,13 @@ export default function Home() {
               </>
             )}
             
+            {/* Admin Login link hidden for production */}
             {/* Non-admin users see login link */}
-            {!isAdmin && (
+            {/* {!isAdmin && (
               <Link href="/admin/login" className="text-gray-600 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 transition-colors text-sm">
                 Admin Login
               </Link>
-            )}
+            )} */}
             
             <AuthNavigation />
           </div>
