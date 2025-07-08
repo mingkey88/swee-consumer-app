@@ -16,7 +16,6 @@ import {
   MapPin,
   CreditCard,
   Smartphone,
-  Building,
   Shield,
   Lock,
   CheckCircle,
@@ -65,26 +64,29 @@ export default function PaymentPage() {
 
   const [bookingDetails, setBookingDetails] = useState<BookingDetails>({
     provider: '',
-    providerName: 'The Hair Lounge',
+    providerName: 'Bella Beauty Studio',
     service: '',
-    serviceName: 'Haircut & Style',
+    serviceName: 'Premium Facial Treatment',
     date: '',
     time: '',
     price: '85',
-    duration: '45 min'
+    duration: '60 min'
   });
 
   useEffect(() => {
     if (searchParams) {
+      const priceParam = searchParams.get('price');
+      const defaultPrice = '85'; // Default fallback price
+      
       setBookingDetails({
-        provider: searchParams.get('provider') || 'hair-lounge-singapore',
-        providerName: searchParams.get('providerName') || 'The Hair Lounge',
-        service: searchParams.get('service') || 'haircut-style',
-        serviceName: searchParams.get('serviceName') || 'Haircut & Style',
+        provider: searchParams.get('provider') || 'bella-beauty-studio',
+        providerName: searchParams.get('providerName') || 'Bella Beauty Studio',
+        service: searchParams.get('service') || 'facial-treatment',
+        serviceName: searchParams.get('serviceName') || 'Premium Facial Treatment',
         date: searchParams.get('date') || new Date().toISOString().split('T')[0],
         time: searchParams.get('time') || '2:00 PM',
-        price: searchParams.get('price') || '85',
-        duration: searchParams.get('duration') || '45 min'
+        price: (priceParam && priceParam !== '0') ? priceParam : defaultPrice,
+        duration: searchParams.get('duration') || '60 min'
       });
     }
   }, [searchParams]);
@@ -102,18 +104,6 @@ export default function PaymentPage() {
       name: 'PayNow',
       icon: <Smartphone className="h-5 w-5" />,
       description: 'QR code payment via banking app'
-    },
-    {
-      id: 'grabpay',
-      name: 'GrabPay',
-      icon: <Smartphone className="h-5 w-5" />,
-      description: 'Pay with GrabPay wallet'
-    },
-    {
-      id: 'bank',
-      name: 'Online Banking',
-      icon: <Building className="h-5 w-5" />,
-      description: 'DBS, OCBC, UOB, and more'
     }
   ];
 
@@ -127,14 +117,12 @@ export default function PaymentPage() {
   };
 
   const calculateTotal = () => {
-    const basePrice = parseFloat(bookingDetails.price);
-    const serviceFee = basePrice * 0.05; // 5% service fee
-    const gst = (basePrice + serviceFee) * 0.09; // 9% GST
+    const basePrice = parseFloat(bookingDetails.price) || 0;
+    const gst = basePrice * 0.09; // 9% GST only
     return {
       basePrice,
-      serviceFee,
       gst,
-      total: basePrice + serviceFee + gst
+      total: basePrice + gst
     };
   };
 
@@ -385,10 +373,6 @@ export default function PaymentPage() {
                   <div className="flex justify-between text-sm">
                     <span>Service fee</span>
                     <span>${pricing.basePrice.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span>Platform fee</span>
-                    <span>${pricing.serviceFee.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span>GST (9%)</span>

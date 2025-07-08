@@ -48,17 +48,18 @@ export default function BookingConfirmPage() {
     service: '',
     date: '',
     time: '',
-    price: '0'
+    price: '85'
   });
 
   useEffect(() => {
     if (searchParams) {
+      const priceParam = searchParams.get('price');
       setBookingDetails({
         provider: searchParams.get('provider') || '',
         service: searchParams.get('service') || '',
         date: searchParams.get('date') || '',
         time: searchParams.get('time') || '',
-        price: searchParams.get('price') || '0'
+        price: (priceParam && priceParam !== '0') ? priceParam : '85'
       });
     }
   }, [searchParams]);

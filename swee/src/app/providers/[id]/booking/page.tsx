@@ -122,7 +122,11 @@ export default function BookingPage() {
 
     // Store booking data and navigate to confirmation
     localStorage.setItem('bookingData', JSON.stringify(bookingData));
-    window.location.href = '/booking/confirm';
+    
+    // Navigate with proper URL parameters including price in cents converted to dollars
+    const priceInDollars = service?.price ? (service.price / 100).toFixed(0) : '85';
+    const confirmUrl = `/booking/confirm?provider=${encodeURIComponent(merchant?.name || '')}&service=${encodeURIComponent(service?.title || '')}&date=${selectedDate}&time=${encodeURIComponent(selectedTime)}&price=${priceInDollars}`;
+    window.location.href = confirmUrl;
   };
 
   const formatDate = (dateString: string) => {
@@ -261,42 +265,46 @@ export default function BookingPage() {
                   </CardHeader>
                   <CardContent className="space-y-4">
                     {merchant.services.map((service) => (
-                      <div
-                        key={service.id}
-                        className={`p-4 border rounded-lg cursor-pointer transition-all ${
-                          selectedService === service.id
-                            ? 'border-orange-500 bg-orange-50 dark:bg-orange-900/20'
-                            : 'border-gray-200 dark:border-gray-600 hover:border-orange-300 dark:hover:border-orange-600'
-                        }`}
-                        onClick={() => setSelectedService(service.id)}
-                      >
-                        <div className="flex items-center justify-between">
-                          <div className="flex-1">
-                            <h3 className="font-semibold text-gray-900 dark:text-white">{service.title}</h3>
-                            <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">{service.description}</p>
-                            <div className="flex items-center space-x-4 mt-2">
-                              <span className="text-sm text-gray-500 dark:text-gray-400">{formatDuration(service.duration)}</span>
-                              <Badge variant="secondary" className="text-xs">{service.category}</Badge>
+                      <div key={service.id}>
+                        <div
+                          className={`p-4 border rounded-lg cursor-pointer transition-all ${
+                            selectedService === service.id
+                              ? 'border-orange-500 bg-orange-50 dark:bg-orange-900/20'
+                              : 'border-gray-200 dark:border-gray-600 hover:border-orange-300 dark:hover:border-orange-600'
+                          }`}
+                          onClick={() => setSelectedService(service.id)}
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex-1">
+                              <h3 className="font-semibold text-gray-900 dark:text-white">{service.title}</h3>
+                              <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">{service.description}</p>
+                              <div className="flex items-center space-x-4 mt-2">
+                                <span className="text-sm text-gray-500 dark:text-gray-400">{formatDuration(service.duration)}</span>
+                                <Badge variant="secondary" className="text-xs">{service.category}</Badge>
+                              </div>
                             </div>
-                          </div>
-                          <div className="text-right ml-6">
-                            <div className="font-bold text-lg text-gray-900 dark:text-white">
-                              {formatPrice(service.price)}
+                            <div className="text-right ml-6">
+                              <div className="font-bold text-lg text-gray-900 dark:text-white">
+                                {formatPrice(service.price)}
+                              </div>
                             </div>
                           </div>
                         </div>
+                        
+                        {/* Show Next button directly below the selected service */}
+                        {selectedService === service.id && (
+                          <div className="flex justify-end pt-4">
+                            <Button
+                              onClick={() => setCurrentStep(2)}
+                              className="bg-orange-500 hover:bg-orange-600 text-white"
+                            >
+                              Next: Select Date & Time
+                              <ChevronRight className="w-4 h-4 ml-2" />
+                            </Button>
+                          </div>
+                        )}
                       </div>
                     ))}
-                    <div className="flex justify-end pt-4">
-                      <Button
-                        onClick={() => setCurrentStep(2)}
-                        disabled={!selectedService}
-                        className="bg-orange-500 hover:bg-orange-600 text-white"
-                      >
-                        Next: Select Date & Time
-                        <ChevronRight className="w-4 h-4 ml-2" />
-                      </Button>
-                    </div>
                   </CardContent>
                 </Card>
               )}
