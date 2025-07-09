@@ -8,6 +8,14 @@ import { Label } from '@/components/ui/label';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Checkbox } from '@/components/ui/checkbox';
 import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuLabel, 
+  DropdownMenuSeparator, 
+  DropdownMenuTrigger 
+} from '@/components/ui/dropdown-menu';
+import { 
   User, 
   Edit2, 
   Save, 
@@ -28,7 +36,8 @@ import {
   Building2,
   Plus,
   ArrowLeft,
-  LogOut
+  LogOut,
+  ChevronDown
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -36,12 +45,12 @@ export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
   const [activeSection, setActiveSection] = useState('profile');
   const [profileData, setProfileData] = useState({
-    firstName: 'Tan Ming',
-    lastName: 'Jie',
-    email: 'mingje.tan88@gmail.com',
+    firstName: 'Bella',
+    lastName: 'Chen',
+    email: 'bella.chen@example.com',
     phone: '+65 9123 4567',
     birthday: '1995-03-15',
-    profileImage: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80'
+    profileImage: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80'
   });
 
   const handleSave = () => {
@@ -588,22 +597,84 @@ export default function ProfilePage() {
             </div>
           </div>
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" size="sm" className="text-gray-300">
-              <Settings className="w-4 h-4 mr-2" />
-              Settings
-            </Button>
-            <div className="flex items-center space-x-3">
-              <div className="text-right">
-                <p className="text-sm font-medium text-white">{profileData.firstName} {profileData.lastName}</p>
-                <p className="text-xs text-gray-400">User</p>
-              </div>
-              <Avatar className="w-8 h-8">
-                <AvatarImage src={profileData.profileImage} alt={`${profileData.firstName} ${profileData.lastName}`} />
-                <AvatarFallback className="bg-orange-500 text-white">
-                  {profileData.firstName[0]}{profileData.lastName[0]}
-                </AvatarFallback>
-              </Avatar>
-            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="flex items-center space-x-2 text-gray-300 hover:text-white">
+                  <Avatar className="w-8 h-8">
+                    <AvatarImage src={profileData.profileImage} alt={`${profileData.firstName} ${profileData.lastName}`} />
+                    <AvatarFallback className="bg-orange-500 text-white">
+                      {profileData.firstName[0]}{profileData.lastName[0]}
+                    </AvatarFallback>
+                  </Avatar>
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-64" align="end" forceMount>
+                <DropdownMenuLabel className="font-normal">
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium leading-none">{profileData.firstName} {profileData.lastName}</p>
+                    <p className="text-xs leading-none text-muted-foreground">
+                      {profileData.email}
+                    </p>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/profile">
+                    <User className="mr-2 h-4 w-4" />
+                    <span>Profile</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/appointments">
+                    <Calendar className="mr-2 h-4 w-4" />
+                    <span>Appointments</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/wallet">
+                    <CreditCard className="mr-2 h-4 w-4" />
+                    <span>Wallet</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/favorites">
+                    <Heart className="mr-2 h-4 w-4" />
+                    <span>Favorites</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/forms">
+                    <FileText className="mr-2 h-4 w-4" />
+                    <span>Forms</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/orders">
+                    <ShoppingBag className="mr-2 h-4 w-4" />
+                    <span>Product orders</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/settings">
+                    <Settings className="mr-2 h-4 w-4" />
+                    <span>Settings</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/">
+                    <ArrowLeft className="mr-2 h-4 w-4" />
+                    <span>Back to Main Site</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Sign Out</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </div>
@@ -647,29 +718,6 @@ export default function ProfilePage() {
               );
             })}
           </nav>
-
-          {/* Bottom Actions */}
-          <div className="p-4 border-t border-gray-700 space-y-2">
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="w-full justify-start text-gray-400 hover:text-white hover:bg-gray-700"
-              asChild
-            >
-              <Link href="/">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Main Site
-              </Link>
-            </Button>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="w-full justify-start text-gray-400 hover:text-white hover:bg-gray-700"
-            >
-              <LogOut className="w-4 h-4 mr-2" />
-              Sign Out
-            </Button>
-          </div>
         </div>
 
         {/* Main Content */}
