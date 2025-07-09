@@ -71,6 +71,7 @@ async function seedBellaBeautyStudio() {
   ])
 
   // Create comprehensive services for Bella Beauty Studio
+  // NOTE: Only run this script once to avoid duplicates. Use cleanup-duplicate-services.ts if needed.
   const services = await Promise.all([
     // Hair Services
     prisma.service.create({

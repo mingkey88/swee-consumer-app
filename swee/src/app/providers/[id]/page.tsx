@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useParams } from 'next/navigation';
 
 interface Service {
@@ -166,10 +167,11 @@ export default function ProviderPage() {
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden mb-8">
           {/* Hero Images */}
           <div className="relative h-80 bg-gray-100 dark:bg-gray-700">
-            <img 
+            <Image 
               src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80"
               alt={`${merchant.name} - Main salon view`}
-              className="w-full h-full object-cover"
+              fill
+              className="object-cover"
             />
           </div>
           
@@ -200,22 +202,13 @@ export default function ProviderPage() {
                 </div>
               </div>
             </div>
-
-            {/* Single Book Now Button - Fresha Style */}
-            <div className="flex justify-center">
-              <Link href={`/providers/${merchant.id}/booking`}>
-                <Button className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-8 text-lg">
-                  Book Now
-                </Button>
-              </Link>
-            </div>
           </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
-            {/* Services Section - Fresha Style */}
+            {/* Services Section - Fresha Style with Book Buttons */}
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Services</h2>
               <div className="space-y-4">
@@ -229,13 +222,20 @@ export default function ProviderPage() {
                         <Badge variant="secondary" className="text-xs">{service.category}</Badge>
                       </div>
                     </div>
-                    <div className="text-right ml-6">
-                      <div className="font-bold text-lg text-gray-900 dark:text-white">
-                        {formatPrice(service.price)}
+                    <div className="flex items-center space-x-4 ml-6">
+                      <div className="text-right">
+                        <div className="font-bold text-lg text-gray-900 dark:text-white">
+                          {formatPrice(service.price)}
+                        </div>
+                        <div className="text-sm text-gray-500 dark:text-gray-400">
+                          {formatDuration(service.duration)}
+                        </div>
                       </div>
-                      <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                        {formatDuration(service.duration)}
-                      </div>
+                      <Link href={`/providers/${merchant.id}/booking?service=${service.id}`}>
+                        <Button className="bg-orange-500 hover:bg-orange-600 text-white font-medium px-6 py-2">
+                          Book
+                        </Button>
+                      </Link>
                     </div>
                   </div>
                 ))}
@@ -251,11 +251,107 @@ export default function ProviderPage() {
               </div>
             </div>
 
-            {/* Reviews Section - Fresha Style */}
+            {/* Reviews Section - Enhanced with Dummy Reviews */}
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Reviews</h2>
-              <div className="space-y-4">
-                {merchant.reviews.slice(0, 5).map((review) => (
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Reviews</h2>
+                <div className="flex items-center space-x-2">
+                  <div className="flex items-center">
+                    <Star className="w-5 h-5 text-yellow-400 fill-current" />
+                    <span className="ml-1 font-semibold text-gray-900 dark:text-white">{merchant.averageRating}</span>
+                  </div>
+                  <span className="text-gray-500 dark:text-gray-400">({merchant.reviewCount + 8} reviews)</span>
+                </div>
+              </div>
+              <div className="space-y-6">
+                {/* Dummy Reviews */}
+                <div className="border-b border-gray-100 dark:border-gray-700 pb-4">
+                  <div className="flex items-start space-x-3">
+                    <Avatar className="w-10 h-10">
+                      <AvatarFallback className="bg-orange-100 dark:bg-orange-900 text-orange-600 dark:text-orange-400">
+                        S
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-2 mb-1">
+                        <span className="font-semibold text-gray-900 dark:text-white">Sarah L.</span>
+                        <div className="flex items-center">
+                          {[...Array(5)].map((_, i) => (
+                            <Star key={i} className="w-4 h-4 text-yellow-400 fill-current" />
+                          ))}
+                        </div>
+                      </div>
+                      <p className="text-gray-600 dark:text-gray-300 text-sm mb-2">
+                        Absolutely loved my experience at Bella Beauty Studio! The facial treatment was amazing and the staff was so professional. My skin feels incredible and the results lasted for weeks. Will definitely be returning!
+                      </p>
+                      <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center space-x-2">
+                        <span>2 days ago</span>
+                        <span>•</span>
+                        <span>Hydrating Facial Deluxe</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="border-b border-gray-100 dark:border-gray-700 pb-4">
+                  <div className="flex items-start space-x-3">
+                    <Avatar className="w-10 h-10">
+                      <AvatarFallback className="bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400">
+                        M
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-2 mb-1">
+                        <span className="font-semibold text-gray-900 dark:text-white">Michelle T.</span>
+                        <div className="flex items-center">
+                          {[...Array(5)].map((_, i) => (
+                            <Star key={i} className="w-4 h-4 text-yellow-400 fill-current" />
+                          ))}
+                        </div>
+                      </div>
+                      <p className="text-gray-600 dark:text-gray-300 text-sm mb-2">
+                        Best hair salon in Singapore! The stylists really listen to what you want and deliver amazing results. My hair color turned out exactly as I envisioned. The salon is also very clean and modern.
+                      </p>
+                      <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center space-x-2">
+                        <span>1 week ago</span>
+                        <span>•</span>
+                        <span>Premium Hair Coloring</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="border-b border-gray-100 dark:border-gray-700 pb-4">
+                  <div className="flex items-start space-x-3">
+                    <Avatar className="w-10 h-10">
+                      <AvatarFallback className="bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400">
+                        J
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-2 mb-1">
+                        <span className="font-semibold text-gray-900 dark:text-white">Jessica W.</span>
+                        <div className="flex items-center">
+                          {[...Array(4)].map((_, i) => (
+                            <Star key={i} className="w-4 h-4 text-yellow-400 fill-current" />
+                          ))}
+                          <Star className="w-4 h-4 text-gray-300 dark:text-gray-600" />
+                        </div>
+                      </div>
+                      <p className="text-gray-600 dark:text-gray-300 text-sm mb-2">
+                        Great experience overall! The massage was very relaxing and therapeutic. The therapist was skilled and professional. Only minor point is that the room could be a bit quieter, but that&apos;s a small detail.
+                      </p>
+                      <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center space-x-2">
+                        <span>2 weeks ago</span>
+                        <span>•</span>
+                        <span>Massage Therapy</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Existing reviews */}
+                {merchant.reviews.slice(0, 2).map((review) => (
                   <div key={review.id} className="border-b border-gray-100 dark:border-gray-700 pb-4 last:border-b-0">
                     <div className="flex items-start space-x-3">
                       <Avatar className="w-10 h-10">
@@ -280,18 +376,170 @@ export default function ProviderPage() {
                           </div>
                         </div>
                         <p className="text-gray-600 dark:text-gray-300 text-sm mb-2">{review.comment}</p>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">
-                          {formatDate(review.date)}
+                        <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center space-x-2">
+                          <span>{formatDate(review.date)}</span>
+                          <span>•</span>
+                          <span>{review.service}</span>
                         </div>
                       </div>
                     </div>
                   </div>
                 ))}
-                {merchant.reviews.length > 5 && (
-                  <Button variant="outline" className="w-full mt-4">
-                    See all {merchant.reviews.length} reviews
+                <Button variant="outline" className="w-full mt-4">
+                  See all reviews
+                </Button>
+              </div>
+            </div>
+
+            {/* Other locations - Fresha Style */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Other locations</h2>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-600 rounded-lg hover:border-orange-300 dark:hover:border-orange-600 transition-colors cursor-pointer">
+                  <div className="flex items-center space-x-4">
+                    <div className="relative w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden">
+                      <Image 
+                        src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80"
+                        alt="Bella Beauty Studio - Orchard"
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-900 dark:text-white">Bella Beauty Studio - Orchard</h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-300">313 Orchard Road, Singapore 238895</p>
+                      <div className="flex items-center space-x-2 mt-1">
+                        <div className="flex items-center">
+                          <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                          <span className="ml-1 text-sm font-medium text-gray-900 dark:text-white">4.7</span>
+                        </div>
+                        <span className="text-xs text-gray-500 dark:text-gray-400">•</span>
+                        <span className="text-xs text-gray-500 dark:text-gray-400">1.2km away</span>
+                      </div>
+                    </div>
+                  </div>
+                  <Button variant="outline" size="sm" className="text-orange-600 border-orange-300 hover:bg-orange-50 dark:hover:bg-orange-900/20">
+                    View
                   </Button>
-                )}
+                </div>
+
+                <div className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-600 rounded-lg hover:border-orange-300 dark:hover:border-orange-600 transition-colors cursor-pointer">
+                  <div className="flex items-center space-x-4">
+                    <div className="relative w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden">
+                      <Image 
+                        src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80"
+                        alt="Bella Beauty Studio - Marina Bay"
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-900 dark:text-white">Bella Beauty Studio - Marina Bay</h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-300">10 Bayfront Avenue, Singapore 018956</p>
+                      <div className="flex items-center space-x-2 mt-1">
+                        <div className="flex items-center">
+                          <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                          <span className="ml-1 text-sm font-medium text-gray-900 dark:text-white">4.8</span>
+                        </div>
+                        <span className="text-xs text-gray-500 dark:text-gray-400">•</span>
+                        <span className="text-xs text-gray-500 dark:text-gray-400">2.8km away</span>
+                      </div>
+                    </div>
+                  </div>
+                  <Button variant="outline" size="sm" className="text-orange-600 border-orange-300 hover:bg-orange-50 dark:hover:bg-orange-900/20">
+                    View
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Venues nearby - Fresha Style */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Venues nearby</h2>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-600 rounded-lg hover:border-orange-300 dark:hover:border-orange-600 transition-colors cursor-pointer">
+                  <div className="flex items-center space-x-4">
+                    <div className="relative w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden">
+                      <Image 
+                        src="https://images.unsplash.com/photo-1562322140-8baeececf3df?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80"
+                        alt="Serenity Spa & Wellness"
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-900 dark:text-white">Serenity Spa & Wellness</h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-300">Spa • Wellness • Massage</p>
+                      <div className="flex items-center space-x-2 mt-1">
+                        <div className="flex items-center">
+                          <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                          <span className="ml-1 text-sm font-medium text-gray-900 dark:text-white">4.6</span>
+                        </div>
+                        <span className="text-xs text-gray-500 dark:text-gray-400">•</span>
+                        <span className="text-xs text-gray-500 dark:text-gray-400">0.5km away</span>
+                      </div>
+                    </div>
+                  </div>
+                  <Button variant="outline" size="sm" className="text-orange-600 border-orange-300 hover:bg-orange-50 dark:hover:bg-orange-900/20">
+                    View
+                  </Button>
+                </div>
+
+                <div className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-600 rounded-lg hover:border-orange-300 dark:hover:border-orange-600 transition-colors cursor-pointer">
+                  <div className="flex items-center space-x-4">
+                    <div className="relative w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden">
+                      <Image 
+                        src="https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80"
+                        alt="Elite Hair Studio"
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-900 dark:text-white">Elite Hair Studio</h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-300">Hair Salon • Styling • Coloring</p>
+                      <div className="flex items-center space-x-2 mt-1">
+                        <div className="flex items-center">
+                          <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                          <span className="ml-1 text-sm font-medium text-gray-900 dark:text-white">4.5</span>
+                        </div>
+                        <span className="text-xs text-gray-500 dark:text-gray-400">•</span>
+                        <span className="text-xs text-gray-500 dark:text-gray-400">0.8km away</span>
+                      </div>
+                    </div>
+                  </div>
+                  <Button variant="outline" size="sm" className="text-orange-600 border-orange-300 hover:bg-orange-50 dark:hover:bg-orange-900/20">
+                    View
+                  </Button>
+                </div>
+
+                <div className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-600 rounded-lg hover:border-orange-300 dark:hover:border-orange-600 transition-colors cursor-pointer">
+                  <div className="flex items-center space-x-4">
+                    <div className="relative w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden">
+                      <Image 
+                        src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80"
+                        alt="Luxe Nail Bar"
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-900 dark:text-white">Luxe Nail Bar</h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-300">Nail Salon • Manicure • Pedicure</p>
+                      <div className="flex items-center space-x-2 mt-1">
+                        <div className="flex items-center">
+                          <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                          <span className="ml-1 text-sm font-medium text-gray-900 dark:text-white">4.4</span>
+                        </div>
+                        <span className="text-xs text-gray-500 dark:text-gray-400">•</span>
+                        <span className="text-xs text-gray-500 dark:text-gray-400">1.1km away</span>
+                      </div>
+                    </div>
+                  </div>
+                  <Button variant="outline" size="sm" className="text-orange-600 border-orange-300 hover:bg-orange-50 dark:hover:bg-orange-900/20">
+                    View
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
