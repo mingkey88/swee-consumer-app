@@ -50,20 +50,9 @@ export default function Home() {
             <nav className="hidden md:flex space-x-6">
               <Link href="/search" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Browse</Link>
               <Link href="/rewards" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Rewards</Link>
-              <Link href="/merchant/auth/signin" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Business</Link>
             </nav>
           </div>
           <div className="flex items-center space-x-4">
-            {/* Mobile Business Button */}
-            <Link 
-              href="/merchant/auth/signin" 
-              className="md:hidden"
-            >
-              <Button size="sm" variant="outline" className="text-purple-600 dark:text-purple-400 border-purple-200 dark:border-purple-800 hover:bg-purple-50 dark:hover:bg-purple-900/20">
-                Business
-              </Button>
-            </Link>
-            
             {/* Dark Mode Toggle */}
             <Button
               variant="ghost"

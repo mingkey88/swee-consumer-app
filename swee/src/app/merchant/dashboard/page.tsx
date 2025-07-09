@@ -10,7 +10,6 @@ import {
   DollarSign, 
   Users, 
   TrendingUp, 
-  Settings, 
   Star,
   ShoppingBag,
   Clock
@@ -48,63 +47,25 @@ export default function MerchantDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Header */}
-      <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
-            <div className="flex items-center space-x-8">
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
-                Swee Business
-              </h1>
-              <div className="hidden md:flex items-center space-x-1 bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
-                <div className="px-3 py-1 bg-white dark:bg-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-900 dark:text-white">
-                  Dashboard
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Button variant="ghost" size="sm" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
-                <Settings className="w-4 h-4" />
-              </Button>
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-gradient-to-r from-amber-600 to-orange-600 rounded-full flex items-center justify-center">
-                  <span className="text-white font-semibold text-sm">
-                    {session.user?.name?.charAt(0)}
-                  </span>
-                </div>
-                <div className="hidden md:block">
-                  <div className="text-sm font-medium text-gray-900 dark:text-white">
-                    {session.user?.name}
-                  </div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">
-                    Business Owner
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
-
+    <div className="p-6">
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto">
         {/* Welcome Banner */}
         <div className="bg-gradient-to-r from-slate-600 to-slate-700 rounded-2xl p-6 mb-8 text-white">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-2xl font-bold mb-2">Good morning, {session.user?.name?.split(' ')[0]}!</h2>
               <p className="text-slate-200 opacity-90 mb-4">
-                Here's what's happening with your business today
+                Here&apos;s what&apos;s happening with your business today
               </p>
               <div className="flex items-center space-x-6">
                 <div className="text-center">
                   <div className="text-2xl font-bold">5</div>
-                  <div className="text-sm text-slate-200 opacity-80">Today's appointments</div>
+                  <div className="text-sm text-slate-200 opacity-80">Today&apos;s appointments</div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold">$340</div>
-                  <div className="text-sm text-slate-200 opacity-80">Today's revenue</div>
+                  <div className="text-sm text-slate-200 opacity-80">Today&apos;s revenue</div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold">2</div>
@@ -317,7 +278,7 @@ export default function MerchantDashboard() {
             </div>
           </CardContent>
         </Card>
-      </main>
+      </div>
     </div>
   );
 }

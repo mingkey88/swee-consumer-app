@@ -8,18 +8,15 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { 
-  ArrowLeft, 
   DollarSign, 
   TrendingUp, 
   TrendingDown, 
   Clock, 
-  Calendar,
   Download,
   AlertCircle,
   CreditCard,
   Wallet
 } from 'lucide-react';
-import Link from 'next/link';
 
 interface PaymentData {
   totalRevenue: number;
@@ -123,10 +120,6 @@ export default function MerchantPayments() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <Link href="/merchant/dashboard" className="flex items-center text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white mr-4">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Dashboard
-              </Link>
               <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
                 Payments & Analytics
               </h1>

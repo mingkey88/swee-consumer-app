@@ -12,7 +12,6 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { 
   AlertCircle, 
-  ArrowLeft, 
   Plus, 
   Edit, 
   Trash2, 
@@ -21,7 +20,6 @@ import {
   Tag,
   CheckCircle
 } from 'lucide-react';
-import Link from 'next/link';
 
 interface Service {
   id: number;
@@ -182,13 +180,6 @@ export default function MerchantServices() {
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             <div className="flex items-center space-x-4">
-              <Link href="/merchant/dashboard">
-                <Button variant="ghost" size="sm" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back to Dashboard
-                </Button>
-              </Link>
-              <div className="h-6 w-px bg-gray-300 dark:bg-gray-600"></div>
               <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Service Management</h1>
             </div>
             <Button 
