@@ -26,7 +26,9 @@ import {
   Trash2,
   ShoppingBag,
   Building2,
-  Plus
+  Plus,
+  ArrowLeft,
+  LogOut
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -72,104 +74,141 @@ export default function ProfilePage() {
     <div className="space-y-8">
       {/* Profile Header */}
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Profile</h1>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setIsEditing(!isEditing)}
-          className="text-purple-600 hover:text-purple-700"
-        >
-          {isEditing ? (
-            <>
-              <X className="w-4 h-4 mr-2" />
-              Cancel
-            </>
-          ) : (
-            <>
-              <Edit2 className="w-4 h-4 mr-2" />
-              Edit
-            </>
-          )}
-        </Button>
-      </div>
-
-      {/* Profile Image and Name */}
-      <div className="text-center">
-        <div className="relative inline-block">
-          <Avatar className="w-32 h-32 mx-auto">
-            <AvatarImage src={profileData.profileImage} alt={`${profileData.firstName} ${profileData.lastName}`} />
-            <AvatarFallback className="text-2xl">{profileData.firstName[0]}{profileData.lastName[0]}</AvatarFallback>
-          </Avatar>
-          {isEditing && (
-            <Button
-              variant="outline"
-              size="sm"
-              className="absolute -bottom-2 -right-2 rounded-full w-10 h-10 p-0"
-            >
-              <Edit2 className="w-4 h-4" />
-            </Button>
-          )}
+        <div>
+          <h1 className="text-3xl font-bold text-white mb-2">Good evening, {profileData.firstName}!</h1>
+          <p className="text-gray-400">Here&apos;s your profile information</p>
         </div>
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mt-4">
-          {profileData.firstName} {profileData.lastName}
-        </h2>
+        <div className="flex space-x-3">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setIsEditing(!isEditing)}
+            className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
+          >
+            {isEditing ? (
+              <>
+                <X className="w-4 h-4 mr-2" />
+                Cancel
+              </>
+            ) : (
+              <>
+                <Edit2 className="w-4 h-4 mr-2" />
+                Edit Profile
+              </>
+            )}
+          </Button>
+          <Button className="bg-orange-500 hover:bg-orange-600">
+            View Calendar
+          </Button>
+        </div>
       </div>
 
-      {/* Personal Information Form */}
-      <Card>
-        <CardContent className="p-8">
-          <div className="max-w-md space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="firstName" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                First name
-              </Label>
-              {isEditing ? (
-                <Input
-                  id="firstName"
-                  value={profileData.firstName}
-                  onChange={(e) => handleInputChange('firstName', e.target.value)}
-                  className="w-full"
-                />
-              ) : (
-                <p className="text-gray-600 dark:text-gray-400">{profileData.firstName}</p>
-              )}
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <Card className="bg-gray-800 border-gray-700">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-400">Total Bookings</p>
+                <p className="text-2xl font-bold text-white">24</p>
+                <p className="text-sm text-green-400">+12.5% vs last month</p>
+              </div>
+              <div className="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center">
+                <Calendar className="w-6 h-6 text-green-400" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-gray-800 border-gray-700">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-400">Favorites</p>
+                <p className="text-2xl font-bold text-white">8</p>
+                <p className="text-sm text-blue-400">+3 from yesterday</p>
+              </div>
+              <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                <Heart className="w-6 h-6 text-blue-400" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-gray-800 border-gray-700">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-400">Trust Score</p>
+                <p className="text-2xl font-bold text-white">4.8</p>
+                <p className="text-sm text-yellow-400">⭐ 127 reviews</p>
+              </div>
+              <div className="w-12 h-12 bg-yellow-500/20 rounded-lg flex items-center justify-center">
+                <Shield className="w-6 h-6 text-yellow-400" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-gray-800 border-gray-700">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-400">Active Since</p>
+                <p className="text-2xl font-bold text-white">2024</p>
+                <p className="text-sm text-purple-400">+7 new this week</p>
+              </div>
+              <div className="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                <User className="w-6 h-6 text-purple-400" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Profile Form */}
+      <Card className="bg-gray-800 border-gray-700">
+        <CardHeader>
+          <CardTitle className="text-xl text-white">Personal Information</CardTitle>
+        </CardHeader>
+        <CardContent className="p-6">
+          <div className="max-w-2xl space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="firstName" className="text-sm font-medium text-gray-300">
+                  First name
+                </Label>
+                {isEditing ? (
+                  <Input
+                    id="firstName"
+                    value={profileData.firstName}
+                    onChange={(e) => handleInputChange('firstName', e.target.value)}
+                    className="bg-gray-700 border-gray-600 text-white"
+                  />
+                ) : (
+                  <p className="text-gray-400 py-2">{profileData.firstName}</p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="lastName" className="text-sm font-medium text-gray-300">
+                  Last name
+                </Label>
+                {isEditing ? (
+                  <Input
+                    id="lastName"
+                    value={profileData.lastName}
+                    onChange={(e) => handleInputChange('lastName', e.target.value)}
+                    className="bg-gray-700 border-gray-600 text-white"
+                  />
+                ) : (
+                  <p className="text-gray-400 py-2">{profileData.lastName}</p>
+                )}
+              </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="lastName" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Last name
-              </Label>
-              {isEditing ? (
-                <Input
-                  id="lastName"
-                  value={profileData.lastName}
-                  onChange={(e) => handleInputChange('lastName', e.target.value)}
-                  className="w-full"
-                />
-              ) : (
-                <p className="text-gray-600 dark:text-gray-400">{profileData.lastName}</p>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="phone" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Mobile number
-              </Label>
-              {isEditing ? (
-                <Input
-                  id="phone"
-                  type="tel"
-                  value={profileData.phone}
-                  onChange={(e) => handleInputChange('phone', e.target.value)}
-                  className="w-full"
-                />
-              ) : (
-                <p className="text-gray-600 dark:text-gray-400">{profileData.phone}</p>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              <Label htmlFor="email" className="text-sm font-medium text-gray-300">
                 Email
               </Label>
               {isEditing ? (
@@ -178,15 +217,32 @@ export default function ProfilePage() {
                   type="email"
                   value={profileData.email}
                   onChange={(e) => handleInputChange('email', e.target.value)}
-                  className="w-full"
+                  className="bg-gray-700 border-gray-600 text-white"
                 />
               ) : (
-                <p className="text-gray-600 dark:text-gray-400">{profileData.email}</p>
+                <p className="text-gray-400 py-2">{profileData.email}</p>
               )}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="birthday" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              <Label htmlFor="phone" className="text-sm font-medium text-gray-300">
+                Mobile number
+              </Label>
+              {isEditing ? (
+                <Input
+                  id="phone"
+                  type="tel"
+                  value={profileData.phone}
+                  onChange={(e) => handleInputChange('phone', e.target.value)}
+                  className="bg-gray-700 border-gray-600 text-white"
+                />
+              ) : (
+                <p className="text-gray-400 py-2">{profileData.phone}</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="birthday" className="text-sm font-medium text-gray-300">
                 Date of birth
               </Label>
               {isEditing ? (
@@ -195,10 +251,10 @@ export default function ProfilePage() {
                   type="date"
                   value={profileData.birthday}
                   onChange={(e) => handleInputChange('birthday', e.target.value)}
-                  className="w-full"
+                  className="bg-gray-700 border-gray-600 text-white"
                 />
               ) : (
-                <p className="text-gray-600 dark:text-gray-400">
+                <p className="text-gray-400 py-2">
                   {new Date(profileData.birthday).toLocaleDateString()}
                 </p>
               )}
@@ -206,11 +262,11 @@ export default function ProfilePage() {
 
             {isEditing && (
               <div className="flex space-x-3 pt-4">
-                <Button onClick={handleSave} className="bg-black hover:bg-gray-800 text-white">
+                <Button onClick={handleSave} className="bg-orange-500 hover:bg-orange-600">
                   <Save className="w-4 h-4 mr-2" />
-                  Save
+                  Save Changes
                 </Button>
-                <Button variant="outline" onClick={handleCancel}>
+                <Button variant="outline" onClick={handleCancel} className="border-gray-600 text-gray-300 hover:bg-gray-700">
                   Cancel
                 </Button>
               </div>
@@ -220,39 +276,39 @@ export default function ProfilePage() {
       </Card>
 
       {/* My Addresses Section */}
-      <Card>
+      <Card className="bg-gray-800 border-gray-700">
         <CardHeader>
-          <CardTitle className="text-xl font-semibold">My addresses</CardTitle>
+          <CardTitle className="text-xl text-white">My addresses</CardTitle>
         </CardHeader>
-        <CardContent className="p-8">
+        <CardContent className="p-6">
           <div className="space-y-4">
-            <div className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+            <div className="flex items-center justify-between p-4 bg-gray-700 rounded-lg">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
-                  <MapPin className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                <div className="w-10 h-10 bg-gray-600 rounded-full flex items-center justify-center">
+                  <MapPin className="w-5 h-5 text-gray-400" />
                 </div>
                 <div>
-                  <p className="font-medium text-gray-900 dark:text-white">Home</p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Add a home address</p>
+                  <p className="font-medium text-white">Home</p>
+                  <p className="text-sm text-gray-400">Add a home address</p>
                 </div>
               </div>
             </div>
 
-            <div className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+            <div className="flex items-center justify-between p-4 bg-gray-700 rounded-lg">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
-                  <Building2 className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                <div className="w-10 h-10 bg-gray-600 rounded-full flex items-center justify-center">
+                  <Building2 className="w-5 h-5 text-gray-400" />
                 </div>
                 <div>
-                  <p className="font-medium text-gray-900 dark:text-white">Work</p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Add a work address</p>
+                  <p className="font-medium text-white">Work</p>
+                  <p className="text-sm text-gray-400">Add a work address</p>
                 </div>
               </div>
             </div>
 
-            <Button variant="outline" className="w-full justify-start">
+            <Button variant="outline" className="w-full justify-start border-gray-600 text-gray-300 hover:bg-gray-700">
               <Plus className="w-4 h-4 mr-2" />
-              Add
+              Add Address
             </Button>
           </div>
         </CardContent>
@@ -262,14 +318,26 @@ export default function ProfilePage() {
 
   const renderAppointmentsContent = () => (
     <div className="space-y-8">
-      <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Appointments</h1>
-      <Card>
-        <CardContent className="p-8">
-          <div className="text-center py-12">
-            <Calendar className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">No appointments yet</h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">Book your first appointment to get started</p>
-            <Button asChild>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-white mb-2">Appointments</h1>
+          <p className="text-gray-400">Manage your appointments and bookings</p>
+        </div>
+        <Button className="bg-orange-500 hover:bg-orange-600">
+          <Calendar className="w-4 h-4 mr-2" />
+          Book New Appointment
+        </Button>
+      </div>
+      
+      <Card className="bg-gray-800 border-gray-700">
+        <CardContent className="p-12">
+          <div className="text-center">
+            <div className="w-16 h-16 bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Calendar className="w-8 h-8 text-gray-400" />
+            </div>
+            <h3 className="text-xl font-semibold text-white mb-2">No appointments yet</h3>
+            <p className="text-gray-400 mb-6">Book your first appointment to get started</p>
+            <Button asChild className="bg-orange-500 hover:bg-orange-600">
               <Link href="/">Browse Services</Link>
             </Button>
           </div>
@@ -280,14 +348,26 @@ export default function ProfilePage() {
 
   const renderWalletContent = () => (
     <div className="space-y-8">
-      <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Wallet</h1>
-      <Card>
-        <CardContent className="p-8">
-          <div className="text-center py-12">
-            <CreditCard className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">No payment methods</h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">Add a payment method to book appointments</p>
-            <Button>Add Payment Method</Button>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-white mb-2">Wallet</h1>
+          <p className="text-gray-400">Manage your payment methods and billing</p>
+        </div>
+        <Button className="bg-orange-500 hover:bg-orange-600">
+          <CreditCard className="w-4 h-4 mr-2" />
+          Add Payment Method
+        </Button>
+      </div>
+      
+      <Card className="bg-gray-800 border-gray-700">
+        <CardContent className="p-12">
+          <div className="text-center">
+            <div className="w-16 h-16 bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+              <CreditCard className="w-8 h-8 text-gray-400" />
+            </div>
+            <h3 className="text-xl font-semibold text-white mb-2">No payment methods</h3>
+            <p className="text-gray-400 mb-6">Add a payment method to book appointments</p>
+            <Button className="bg-orange-500 hover:bg-orange-600">Add Payment Method</Button>
           </div>
         </CardContent>
       </Card>
@@ -296,14 +376,26 @@ export default function ProfilePage() {
 
   const renderFavoritesContent = () => (
     <div className="space-y-8">
-      <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Favorites</h1>
-      <Card>
-        <CardContent className="p-8">
-          <div className="text-center py-12">
-            <Heart className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">No favorites yet</h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">Save your favorite providers for easy booking</p>
-            <Button asChild>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-white mb-2">Favorites</h1>
+          <p className="text-gray-400">Your saved providers and services</p>
+        </div>
+        <Button className="bg-orange-500 hover:bg-orange-600">
+          <Heart className="w-4 h-4 mr-2" />
+          Explore Providers
+        </Button>
+      </div>
+      
+      <Card className="bg-gray-800 border-gray-700">
+        <CardContent className="p-12">
+          <div className="text-center">
+            <div className="w-16 h-16 bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Heart className="w-8 h-8 text-gray-400" />
+            </div>
+            <h3 className="text-xl font-semibold text-white mb-2">No favorites yet</h3>
+            <p className="text-gray-400 mb-6">Save your favorite providers for easy booking</p>
+            <Button asChild className="bg-orange-500 hover:bg-orange-600">
               <Link href="/">Explore Providers</Link>
             </Button>
           </div>
@@ -314,13 +406,21 @@ export default function ProfilePage() {
 
   const renderFormsContent = () => (
     <div className="space-y-8">
-      <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Forms</h1>
-      <Card>
-        <CardContent className="p-8">
-          <div className="text-center py-12">
-            <FileText className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">No forms</h3>
-            <p className="text-gray-600 dark:text-gray-400">Your intake forms will appear here</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-white mb-2">Forms</h1>
+          <p className="text-gray-400">Your intake forms and documents</p>
+        </div>
+      </div>
+      
+      <Card className="bg-gray-800 border-gray-700">
+        <CardContent className="p-12">
+          <div className="text-center">
+            <div className="w-16 h-16 bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+              <FileText className="w-8 h-8 text-gray-400" />
+            </div>
+            <h3 className="text-xl font-semibold text-white mb-2">No forms</h3>
+            <p className="text-gray-400">Your intake forms will appear here</p>
           </div>
         </CardContent>
       </Card>
@@ -329,13 +429,21 @@ export default function ProfilePage() {
 
   const renderOrdersContent = () => (
     <div className="space-y-8">
-      <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Product orders</h1>
-      <Card>
-        <CardContent className="p-8">
-          <div className="text-center py-12">
-            <ShoppingBag className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">No orders yet</h3>
-            <p className="text-gray-600 dark:text-gray-400">Your product orders will appear here</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-white mb-2">Product orders</h1>
+          <p className="text-gray-400">Your product purchases and order history</p>
+        </div>
+      </div>
+      
+      <Card className="bg-gray-800 border-gray-700">
+        <CardContent className="p-12">
+          <div className="text-center">
+            <div className="w-16 h-16 bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+              <ShoppingBag className="w-8 h-8 text-gray-400" />
+            </div>
+            <h3 className="text-xl font-semibold text-white mb-2">No orders yet</h3>
+            <p className="text-gray-400">Your product orders will appear here</p>
           </div>
         </CardContent>
       </Card>
@@ -344,19 +452,27 @@ export default function ProfilePage() {
 
   const renderSettingsContent = () => (
     <div className="space-y-8">
-      <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Settings</h1>
-      <Card>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-white mb-2">Settings</h1>
+          <p className="text-gray-400">Manage your account preferences</p>
+        </div>
+      </div>
+      
+      <Card className="bg-gray-800 border-gray-700">
         <CardHeader>
-          <CardTitle>Notifications</CardTitle>
+          <CardTitle className="text-white">Notifications</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                <Bell className="w-5 h-5 text-gray-400" />
+                <div className="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center">
+                  <Bell className="w-5 h-5 text-gray-400" />
+                </div>
                 <div>
-                  <p className="font-medium">Email Notifications</p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Receive booking updates via email</p>
+                  <p className="font-medium text-white">Email Notifications</p>
+                  <p className="text-sm text-gray-400">Receive booking updates via email</p>
                 </div>
               </div>
               <Checkbox defaultChecked />
@@ -364,10 +480,12 @@ export default function ProfilePage() {
 
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                <Smartphone className="w-5 h-5 text-gray-400" />
+                <div className="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center">
+                  <Smartphone className="w-5 h-5 text-gray-400" />
+                </div>
                 <div>
-                  <p className="font-medium">SMS Notifications</p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Get text reminders for appointments</p>
+                  <p className="font-medium text-white">SMS Notifications</p>
+                  <p className="text-sm text-gray-400">Get text reminders for appointments</p>
                 </div>
               </div>
               <Checkbox defaultChecked />
@@ -376,18 +494,20 @@ export default function ProfilePage() {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="bg-gray-800 border-gray-700">
         <CardHeader>
-          <CardTitle>Privacy</CardTitle>
+          <CardTitle className="text-white">Privacy</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                <Shield className="w-5 h-5 text-gray-400" />
+                <div className="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center">
+                  <Shield className="w-5 h-5 text-gray-400" />
+                </div>
                 <div>
-                  <p className="font-medium">Privacy Mode</p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Hide your profile from public searches</p>
+                  <p className="font-medium text-white">Privacy Mode</p>
+                  <p className="text-sm text-gray-400">Hide your profile from public searches</p>
                 </div>
               </div>
               <Checkbox />
@@ -395,10 +515,12 @@ export default function ProfilePage() {
 
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                <Globe className="w-5 h-5 text-gray-400" />
+                <div className="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center">
+                  <Globe className="w-5 h-5 text-gray-400" />
+                </div>
                 <div>
-                  <p className="font-medium">Marketing Communications</p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Receive offers and promotions</p>
+                  <p className="font-medium text-white">Marketing Communications</p>
+                  <p className="text-sm text-gray-400">Receive offers and promotions</p>
                 </div>
               </div>
               <Checkbox />
@@ -407,21 +529,21 @@ export default function ProfilePage() {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="bg-gray-800 border-gray-700">
         <CardHeader>
-          <CardTitle>Account</CardTitle>
+          <CardTitle className="text-white">Account</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
-            <Button variant="outline" className="w-full justify-start">
+            <Button variant="outline" className="w-full justify-start border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white">
               <Lock className="w-4 h-4 mr-2" />
               Change Password
             </Button>
-            <Button variant="outline" className="w-full justify-start">
+            <Button variant="outline" className="w-full justify-start border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white">
               <FileText className="w-4 h-4 mr-2" />
               Download Data
             </Button>
-            <Button variant="outline" className="w-full justify-start text-red-600 hover:text-red-700">
+            <Button variant="outline" className="w-full justify-start border-gray-600 text-red-400 hover:bg-red-900/20 hover:text-red-300">
               <Trash2 className="w-4 h-4 mr-2" />
               Delete Account
             </Button>
@@ -453,73 +575,106 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Top Navigation */}
-      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-8">
-              <Link href="/" className="text-2xl font-bold text-purple-600 dark:text-purple-400">
-                Swee
-              </Link>
-              <div className="hidden md:flex items-center space-x-4">
-                <Button variant="ghost" size="sm">
-                  <span className="mr-2">🔍</span>
-                  All treatments
-                </Button>
-                <Button variant="ghost" size="sm">
-                  Current location
-                </Button>
-                <Button variant="ghost" size="sm">
-                  Any date
-                </Button>
-                <Button variant="ghost" size="sm">
-                  Any time
-                </Button>
-              </div>
+    <div className="min-h-screen bg-gray-900">
+      {/* Top Navigation Bar */}
+      <div className="bg-gray-800 border-b border-gray-700">
+        <div className="flex items-center justify-between px-6 py-4">
+          <div className="flex items-center space-x-4">
+            <Link href="/" className="text-2xl font-bold text-orange-500">
+              Swee
+            </Link>
+            <div className="px-3 py-1 bg-gray-700 rounded-lg text-sm text-gray-300">
+              Profile
             </div>
-            <div className="flex items-center space-x-4">
+          </div>
+          <div className="flex items-center space-x-4">
+            <Button variant="ghost" size="sm" className="text-gray-300">
+              <Settings className="w-4 h-4 mr-2" />
+              Settings
+            </Button>
+            <div className="flex items-center space-x-3">
+              <div className="text-right">
+                <p className="text-sm font-medium text-white">{profileData.firstName} {profileData.lastName}</p>
+                <p className="text-xs text-gray-400">User</p>
+              </div>
               <Avatar className="w-8 h-8">
                 <AvatarImage src={profileData.profileImage} alt={`${profileData.firstName} ${profileData.lastName}`} />
-                <AvatarFallback>{profileData.firstName[0]}{profileData.lastName[0]}</AvatarFallback>
+                <AvatarFallback className="bg-orange-500 text-white">
+                  {profileData.firstName[0]}{profileData.lastName[0]}
+                </AvatarFallback>
               </Avatar>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex gap-8">
-          {/* Left Sidebar */}
-          <div className="w-64 flex-shrink-0">
-            <div className="mb-6">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-                {profileData.firstName} {profileData.lastName}
-              </h2>
+      <div className="flex h-[calc(100vh-73px)]">
+        {/* Left Sidebar */}
+        <div className="w-64 bg-gray-800 border-r border-gray-700 flex flex-col">
+          {/* User Info */}
+          <div className="p-6 border-b border-gray-700">
+            <div className="flex items-center space-x-3">
+              <Avatar className="w-12 h-12">
+                <AvatarImage src={profileData.profileImage} alt={`${profileData.firstName} ${profileData.lastName}`} />
+                <AvatarFallback className="bg-orange-500 text-white">
+                  {profileData.firstName[0]}{profileData.lastName[0]}
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <h3 className="font-semibold text-white">{profileData.firstName} {profileData.lastName}</h3>
+                <p className="text-sm text-gray-400">User</p>
+              </div>
             </div>
-            <nav className="space-y-2">
-              {navigationItems.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => setActiveSection(item.id)}
-                    className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left transition-colors ${
-                      activeSection === item.id
-                        ? 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300'
-                        : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800'
-                    }`}
-                  >
-                    <Icon className="w-5 h-5" />
-                    <span className="font-medium">{item.label}</span>
-                  </button>
-                );
-              })}
-            </nav>
           </div>
 
-          {/* Main Content */}
-          <div className="flex-1">
+          {/* Navigation */}
+          <nav className="flex-1 p-4 space-y-2">
+            {navigationItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => setActiveSection(item.id)}
+                  className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors ${
+                    activeSection === item.id
+                      ? 'bg-orange-500 text-white'
+                      : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                  }`}
+                >
+                  <Icon className="w-5 h-5" />
+                  <span className="font-medium">{item.label}</span>
+                </button>
+              );
+            })}
+          </nav>
+
+          {/* Bottom Actions */}
+          <div className="p-4 border-t border-gray-700 space-y-2">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="w-full justify-start text-gray-400 hover:text-white hover:bg-gray-700"
+              asChild
+            >
+              <Link href="/">
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back to Main Site
+              </Link>
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="w-full justify-start text-gray-400 hover:text-white hover:bg-gray-700"
+            >
+              <LogOut className="w-4 h-4 mr-2" />
+              Sign Out
+            </Button>
+          </div>
+        </div>
+
+        {/* Main Content */}
+        <div className="flex-1 overflow-y-auto">
+          <div className="p-8">
             {renderContent()}
           </div>
         </div>
