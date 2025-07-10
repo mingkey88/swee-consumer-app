@@ -1,0 +1,75 @@
+/* Additional dark mode styles for calendar text */
+
+/* Ensure event text is white in dark mode */
+.dark .rbc-event-content,
+.rbc-calendar-dark .rbc-event-content {
+  color: #ffffff !important;
+}
+
+/* Fix for day number coloring in month view */
+.dark .rbc-date-cell,
+.rbc-calendar-dark .rbc-date-cell {
+  color: #f9fafb !important;
+}
+
+/* Fix for day number coloring in month view - stronger selector */
+.dark .rbc-date-cell > a,
+.rbc-calendar-dark .rbc-date-cell > a {
+  color: #f9fafb !important;
+}
+
+/* Fix for event time text */
+.dark .rbc-event-label,
+.rbc-calendar-dark .rbc-event-label {
+  color: #ffffff !important;
+}
+
+/* Fix for all text in the calendar, ensuring visibility */
+.dark .rbc-calendar,
+.rbc-calendar-dark {
+  color: #f9fafb !important;
+}
+
+/* Fix for time gutter */
+.dark .rbc-time-gutter,
+.rbc-calendar-dark .rbc-time-gutter {
+  color: #f9fafb !important;
+}
+
+/* Stronger contrast for event content */
+.dark .rbc-event,
+.rbc-calendar-dark .rbc-event {
+  background-color: rgba(79, 70, 229, 0.4) !important;
+  border-color: rgba(79, 70, 229, 0.8) !important;
+}
+
+/* Different colors based on status */
+.dark .rbc-event.pending,
+.rbc-calendar-dark .rbc-event.pending {
+  background-color: rgba(251, 191, 36, 0.3) !important;
+  border-left: 4px solid #F59E0B !important;
+}
+
+.dark .rbc-event.confirmed,
+.rbc-calendar-dark .rbc-event.confirmed {
+  background-color: rgba(96, 165, 250, 0.3) !important;
+  border-left: 4px solid #3B82F6 !important;
+}
+
+.dark .rbc-event.completed,
+.rbc-calendar-dark .rbc-event.completed {
+  background-color: rgba(52, 211, 153, 0.3) !important;
+  border-left: 4px solid #10B981 !important;
+}
+
+.dark .rbc-event.cancelled,
+.rbc-calendar-dark .rbc-event.cancelled {
+  background-color: rgba(239, 68, 68, 0.3) !important;
+  border-left: 4px solid #EF4444 !important;
+}
+
+.dark .rbc-event.no-show,
+.rbc-calendar-dark .rbc-event.no-show {
+  background-color: rgba(156, 163, 175, 0.3) !important;
+  border-left: 4px solid #6B7280 !important;
+}

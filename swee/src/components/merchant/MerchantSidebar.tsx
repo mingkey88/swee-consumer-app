@@ -83,8 +83,8 @@ export default function MerchantSidebar() {
       <div className={`fixed inset-y-0 left-0 z-40 w-72 bg-white dark:bg-gray-800 shadow-2xl transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 border-r border-gray-200 dark:border-gray-700`}>
         <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className="flex items-center justify-center h-20 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-slate-700 to-slate-800">
-            <Link href="/merchant/dashboard" className="text-2xl font-bold text-white">
+          <div className="flex items-center justify-center h-20 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-800">
+            <Link href="/merchant/dashboard" className="text-2xl font-bold text-slate-800 dark:text-white">
               Swee Business
             </Link>
           </div>
