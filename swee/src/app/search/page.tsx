@@ -297,8 +297,11 @@ export default function SearchPage() {
       <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50 transition-colors duration-300">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <Link href="/" className="text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300">
-              Swee
+            <Link href="/" className="flex items-center space-x-2 transition-colors duration-300">
+              <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-lg">S</span>
+              </div>
+              <h1 className="text-2xl font-bold text-orange-500 transition-colors duration-300">Swee</h1>
             </Link>
             <div className="flex items-center gap-4">
               <Button

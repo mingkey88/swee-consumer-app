@@ -27,6 +27,13 @@ interface Service {
   tags: string[];
 }
 
+interface SelectedService {
+  id: number;
+  title: string;
+  duration: number;
+  price: number;
+}
+
 interface MerchantData {
   id: number;
   name: string;
@@ -39,7 +46,16 @@ interface MerchantData {
   averageRating: number;
   reviewCount: number;
   services: Service[];
-  reviews: any[];
+  reviews: Review[];
+}
+
+interface Review {
+  id: number;
+  rating: number;
+  comment: string;
+  user: {
+    name: string;
+  };
 }
 
 interface TimeSlot {
@@ -69,7 +85,7 @@ export default function BookingPage() {
   const searchParams = useSearchParams();
   const { darkMode: isDarkMode, toggleDarkMode } = useTheme();
   
-  const [selectedService, setSelectedService] = useState<number | null>(null);
+  const [selectedServices, setSelectedServices] = useState<SelectedService[]>([]);
   const [selectedTime, setSelectedTime] = useState<string>('');
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [merchant, setMerchant] = useState<MerchantData | null>(null);
@@ -89,8 +105,16 @@ export default function BookingPage() {
         
         // Set pre-selected service from URL params
         const serviceId = searchParams.get('service');
-        if (serviceId) {
-          setSelectedService(parseInt(serviceId));
+        if (serviceId && data.services) {
+          const service = data.services.find((s: Service) => s.id === parseInt(serviceId));
+          if (service) {
+            setSelectedServices([{
+              id: service.id,
+              title: service.title,
+              duration: service.duration,
+              price: service.price
+            }]);
+          }
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred');
@@ -102,30 +126,57 @@ export default function BookingPage() {
     fetchMerchant();
   }, [params.id, searchParams]);
 
+  // Helper functions for service management
+  const addService = (service: Service) => {
+    const existingIndex = selectedServices.findIndex(s => s.id === service.id);
+    if (existingIndex >= 0) {
+      // Service already selected, do nothing (since quantity is always 1)
+      return;
+    } else {
+      // Add new service
+      setSelectedServices([...selectedServices, {
+        id: service.id,
+        title: service.title,
+        duration: service.duration,
+        price: service.price
+      }]);
+    }
+  };
+
+  const removeService = (serviceId: number) => {
+    setSelectedServices(selectedServices.filter(s => s.id !== serviceId));
+  };
+
+  // Calculate totals (no quantities, so each service counts as 1)
+  const totalDuration = selectedServices.reduce((total, service) => 
+    total + service.duration, 0);
+  
+  const totalPrice = selectedServices.reduce((total, service) => 
+    total + service.price, 0);
+
   const handleBooking = () => {
-    if (!selectedService || !selectedTime || !selectedDate) {
-      alert('Please select a service, date, and time');
+    if (selectedServices.length === 0 || !selectedTime || !selectedDate) {
+      alert('Please select at least one service, date, and time');
       return;
     }
 
-    const service = merchant?.services.find(s => s.id === selectedService);
     const bookingData = {
       merchantId: merchant?.id,
       merchantName: merchant?.name,
-      service: service?.title,
-      serviceId: selectedService,
+      services: selectedServices,
       date: selectedDate,
       time: selectedTime,
-      price: service?.price,
-      duration: service?.duration,
+      totalPrice: totalPrice,
+      totalDuration: totalDuration,
     };
 
     // Store booking data and navigate to confirmation
     localStorage.setItem('bookingData', JSON.stringify(bookingData));
     
-    // Navigate with proper URL parameters including price in cents converted to dollars
-    const priceInDollars = service?.price ? (service.price / 100).toFixed(0) : '85';
-    const confirmUrl = `/booking/confirm?provider=${encodeURIComponent(merchant?.name || '')}&service=${encodeURIComponent(service?.title || '')}&date=${selectedDate}&time=${encodeURIComponent(selectedTime)}&price=${priceInDollars}`;
+    // Navigate with proper URL parameters
+    const priceInDollars = (totalPrice / 100).toFixed(0);
+    const serviceNames = selectedServices.map(s => s.title).join(', ');
+    const confirmUrl = `/booking/confirm?provider=${encodeURIComponent(merchant?.name || '')}&service=${encodeURIComponent(serviceNames)}&date=${selectedDate}&time=${encodeURIComponent(selectedTime)}&price=${priceInDollars}`;
     window.location.href = confirmUrl;
   };
 
@@ -189,8 +240,6 @@ export default function BookingPage() {
       </div>
     );
   }
-
-  const selectedServiceData = merchant.services.find(s => s.id === selectedService);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
@@ -261,50 +310,76 @@ export default function BookingPage() {
               {currentStep === 1 && (
                 <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
                   <CardHeader>
-                    <CardTitle className="text-xl text-gray-900 dark:text-white">Choose a Service</CardTitle>
+                    <CardTitle className="text-xl text-gray-900 dark:text-white">Choose Services</CardTitle>
+                    <p className="text-sm text-gray-600 dark:text-gray-300">Select one or more services for your appointment</p>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    {merchant.services.map((service) => (
-                      <div key={service.id}>
-                        <div
-                          className={`p-4 border rounded-lg cursor-pointer transition-all ${
-                            selectedService === service.id
-                              ? 'border-orange-500 bg-orange-50 dark:bg-orange-900/20'
-                              : 'border-gray-200 dark:border-gray-600 hover:border-orange-300 dark:hover:border-orange-600'
-                          }`}
-                          onClick={() => setSelectedService(service.id)}
-                        >
-                          <div className="flex items-center justify-between">
-                            <div className="flex-1">
-                              <h3 className="font-semibold text-gray-900 dark:text-white">{service.title}</h3>
-                              <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">{service.description}</p>
-                              <div className="flex items-center space-x-4 mt-2">
-                                <span className="text-sm text-gray-500 dark:text-gray-400">{formatDuration(service.duration)}</span>
-                                <Badge variant="secondary" className="text-xs">{service.category}</Badge>
+                    {merchant.services.map((service) => {
+                      const selectedService = selectedServices.find(s => s.id === service.id);
+                      const isSelected = !!selectedService;
+                      
+                      return (
+                        <div key={service.id}>
+                          <div
+                            className={`p-4 border rounded-lg transition-all ${
+                              isSelected
+                                ? 'border-orange-500 bg-orange-50 dark:bg-orange-900/20'
+                                : 'border-gray-200 dark:border-gray-600 hover:border-orange-300 dark:hover:border-orange-600'
+                            }`}
+                          >
+                            <div className="flex items-center justify-between">
+                              <div className="flex-1">
+                                <h3 className="font-semibold text-gray-900 dark:text-white">{service.title}</h3>
+                                <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">{service.description}</p>
+                                <div className="flex items-center space-x-4 mt-2">
+                                  <span className="text-sm text-gray-500 dark:text-gray-400">{formatDuration(service.duration)}</span>
+                                  <Badge variant="secondary" className="text-xs">{service.category}</Badge>
+                                </div>
                               </div>
-                            </div>
-                            <div className="text-right ml-6">
-                              <div className="font-bold text-lg text-gray-900 dark:text-white">
-                                {formatPrice(service.price)}
+                              <div className="text-right ml-6">
+                                <div className="font-bold text-lg text-gray-900 dark:text-white">
+                                  {formatPrice(service.price)}
+                                </div>
+                                <div className="flex items-center space-x-2 mt-2">
+                                  {isSelected ? (
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() => removeService(service.id)}
+                                      className="text-red-600 hover:text-red-700"
+                                    >
+                                      Remove Service
+                                    </Button>
+                                  ) : (
+                                    <Button
+                                      onClick={() => addService(service)}
+                                      variant="outline"
+                                      size="sm"
+                                      className="border-orange-500 text-orange-600 hover:bg-orange-50"
+                                    >
+                                      Add Service
+                                    </Button>
+                                  )}
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
-                        
-                        {/* Show Next button directly below the selected service */}
-                        {selectedService === service.id && (
-                          <div className="flex justify-end pt-4">
-                            <Button
-                              onClick={() => setCurrentStep(2)}
-                              className="bg-orange-500 hover:bg-orange-600 text-white"
-                            >
-                              Next: Select Date & Time
-                              <ChevronRight className="w-4 h-4 ml-2" />
-                            </Button>
-                          </div>
-                        )}
+                      );
+                    })}
+                    
+                    {/* Continue Button */}
+                    {selectedServices.length > 0 && (
+                      <div className="flex justify-end pt-4">
+                        <Button
+                          onClick={() => setCurrentStep(2)}
+                          className="bg-orange-500 hover:bg-orange-600 text-white"
+                        >
+                          Continue: Select Date & Time
+                          <ChevronRight className="w-4 h-4 ml-2" />
+                        </Button>
                       </div>
-                    ))}
+                    )}
                   </CardContent>
                 </Card>
               )}
@@ -406,9 +481,25 @@ export default function BookingPage() {
                     <div className="border border-gray-200 dark:border-gray-600 rounded-lg p-4">
                       <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Booking Details</h3>
                       <div className="space-y-3">
-                        <div className="flex justify-between">
-                          <span className="text-gray-600 dark:text-gray-300">Service:</span>
-                          <span className="font-medium text-gray-900 dark:text-white">{selectedServiceData?.title}</span>
+                        <div>
+                          <span className="text-gray-600 dark:text-gray-300 block mb-2">Services:</span>
+                          <div className="space-y-2">
+                            {selectedServices.map((service) => (
+                              <div key={service.id} className="flex justify-between items-center py-2 px-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                                <div>
+                                  <span className="font-medium text-gray-900 dark:text-white">{service.title}</span>
+                                  <div className="text-sm text-gray-600 dark:text-gray-300">
+                                    {formatDuration(service.duration)}
+                                  </div>
+                                </div>
+                                <div className="text-right">
+                                  <div className="font-medium text-gray-900 dark:text-white">
+                                    {formatPrice(service.price)}
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-gray-600 dark:text-gray-300">Date:</span>
@@ -419,12 +510,12 @@ export default function BookingPage() {
                           <span className="font-medium text-gray-900 dark:text-white">{selectedTime}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-gray-600 dark:text-gray-300">Duration:</span>
-                          <span className="font-medium text-gray-900 dark:text-white">{formatDuration(selectedServiceData?.duration || 0)}</span>
+                          <span className="text-gray-600 dark:text-gray-300">Total Duration:</span>
+                          <span className="font-medium text-gray-900 dark:text-white">{formatDuration(totalDuration)}</span>
                         </div>
                         <div className="flex justify-between border-t border-gray-200 dark:border-gray-600 pt-3">
-                          <span className="text-gray-600 dark:text-gray-300">Total:</span>
-                          <span className="font-bold text-lg text-gray-900 dark:text-white">{formatPrice(selectedServiceData?.price || 0)}</span>
+                          <span className="text-gray-600 dark:text-gray-300">Total Cost:</span>
+                          <span className="font-bold text-lg text-gray-900 dark:text-white">{formatPrice(totalPrice)}</span>
                         </div>
                       </div>
                     </div>
@@ -471,13 +562,33 @@ export default function BookingPage() {
                   </div>
                   <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">{merchant.address}</p>
                   
-                  {selectedServiceData && (
+                  {selectedServices.length > 0 && (
                     <div className="border-t border-gray-200 dark:border-gray-600 pt-4">
-                      <h4 className="font-medium text-gray-900 dark:text-white mb-2">Selected Service</h4>
-                      <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
-                        <div className="font-medium text-gray-900 dark:text-white">{selectedServiceData.title}</div>
-                        <div className="text-sm text-gray-600 dark:text-gray-300">{formatDuration(selectedServiceData.duration)}</div>
-                        <div className="font-bold text-orange-600 dark:text-orange-400">{formatPrice(selectedServiceData.price)}</div>
+                      <h4 className="font-medium text-gray-900 dark:text-white mb-2">Selected Services</h4>
+                      <div className="space-y-3">
+                        {selectedServices.map((service) => (
+                          <div key={service.id} className="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+                            <div className="font-medium text-gray-900 dark:text-white">{service.title}</div>
+                            <div className="text-sm text-gray-600 dark:text-gray-300">
+                              {formatDuration(service.duration)}
+                            </div>
+                            <div className="font-bold text-orange-600 dark:text-orange-400">
+                              {formatPrice(service.price)}
+                            </div>
+                          </div>
+                        ))}
+                        
+                        {/* Total Summary */}
+                        <div className="border-t border-gray-200 dark:border-gray-600 pt-3 mt-3">
+                          <div className="flex justify-between mb-2">
+                            <span className="text-sm text-gray-600 dark:text-gray-300">Total Duration:</span>
+                            <span className="text-sm font-medium text-gray-900 dark:text-white">{formatDuration(totalDuration)}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-sm text-gray-600 dark:text-gray-300">Total Cost:</span>
+                            <span className="font-bold text-orange-600 dark:text-orange-400">{formatPrice(totalPrice)}</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   )}

@@ -22,6 +22,23 @@ import {
 import { useTheme } from '@/contexts/ThemeContext';
 import Link from 'next/link';
 
+interface SelectedService {
+  id: number;
+  title: string;
+  duration: number;
+  price: number;
+}
+
+interface BookingData {
+  merchantId: number;
+  merchantName: string;
+  services: SelectedService[];
+  date: string;
+  time: string;
+  totalPrice: number;
+  totalDuration: number;
+}
+
 interface BookingDetails {
   provider: string;
   service: string;
@@ -33,9 +50,9 @@ interface BookingDetails {
 export default function BookingConfirmPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
   const { darkMode, toggleDarkMode } = useTheme();
+  const [bookingData, setBookingData] = useState<BookingData | null>(null);
   const [customerInfo, setCustomerInfo] = useState({
     name: '',
     email: '',
@@ -43,7 +60,7 @@ export default function BookingConfirmPage() {
     notes: ''
   });
 
-  const [bookingDetails, setBookingDetails] = useState<BookingDetails>({
+  const [fallbackBookingDetails, setFallbackBookingDetails] = useState<BookingDetails>({
     provider: '',
     service: '',
     date: '',
@@ -52,9 +69,22 @@ export default function BookingConfirmPage() {
   });
 
   useEffect(() => {
+    // First try to get booking data from localStorage (new multi-service flow)
+    const storedBookingData = localStorage.getItem('bookingData');
+    if (storedBookingData) {
+      try {
+        const parsedData = JSON.parse(storedBookingData);
+        setBookingData(parsedData);
+        return;
+      } catch (error) {
+        console.error('Error parsing booking data:', error);
+      }
+    }
+
+    // Fallback to URL parameters (legacy single service flow)
     if (searchParams) {
       const priceParam = searchParams.get('price');
-      setBookingDetails({
+      setFallbackBookingDetails({
         provider: searchParams.get('provider') || '',
         service: searchParams.get('service') || '',
         date: searchParams.get('date') || '',
@@ -66,13 +96,47 @@ export default function BookingConfirmPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
 
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 2000));
 
-    setLoading(false);
     setConfirmed(true);
+  };
+
+  // Helper functions to get booking information
+  const getProviderName = () => {
+    return bookingData?.merchantName || fallbackBookingDetails.provider || '';
+  };
+
+  const getServicesDisplay = () => {
+    if (bookingData?.services) {
+      return bookingData.services.map(service => service.title).join(', ');
+    }
+    return serviceNames[fallbackBookingDetails.service] || fallbackBookingDetails.service;
+  };
+
+  const getDate = () => {
+    return bookingData?.date || fallbackBookingDetails.date;
+  };
+
+  const getTime = () => {
+    return bookingData?.time || fallbackBookingDetails.time;
+  };
+
+  const getTotalPrice = () => {
+    if (bookingData?.totalPrice) {
+      return (bookingData.totalPrice / 100).toFixed(0);
+    }
+    return fallbackBookingDetails.price;
+  };
+
+  const formatDuration = (minutes: number) => {
+    if (minutes < 60) {
+      return `${minutes} min`;
+    }
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
   };
 
   const serviceNames: Record<string, string> = {
@@ -130,7 +194,7 @@ export default function BookingConfirmPage() {
       <header className="bg-white dark:bg-gray-800 border-b dark:border-gray-700 transition-colors">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center gap-4">
-            <Link href={`/providers/${bookingDetails.provider}`}>
+            <Link href={`/providers/${getProviderName()}`}>
               <Button variant="ghost" size="sm">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Back
@@ -164,23 +228,44 @@ export default function BookingConfirmPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-lg p-4">
-                  <h3 className="font-semibold text-lg mb-2">The Hair Lounge</h3>
+                  <h3 className="font-semibold text-lg mb-2">{getProviderName()}</h3>
                   <div className="space-y-2">
                     <div className="flex items-center gap-2 text-sm">
                       <MapPin className="h-4 w-4 text-gray-500 dark:text-gray-400" />
                       <span>277A Holland Avenue, Singapore 278624</span>
                     </div>
-                    <div className="flex items-center gap-2 text-sm">
-                      <User className="h-4 w-4 text-gray-500 dark:text-gray-400" />
-                      <span>{serviceNames[bookingDetails.service] || bookingDetails.service}</span>
-                    </div>
+                    {bookingData?.services ? (
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2 text-sm">
+                          <User className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+                          <span>Services:</span>
+                        </div>
+                        {bookingData.services.map((service) => (
+                          <div key={service.id} className="ml-6 text-sm bg-white dark:bg-gray-800 p-2 rounded border">
+                            <div className="font-medium">{service.title}</div>
+                            <div className="text-gray-600 dark:text-gray-300">
+                              {formatDuration(service.duration)}
+                              {' • '}${(service.price / 100).toFixed(2)}
+                            </div>
+                          </div>
+                        ))}
+                        <div className="ml-6 text-sm font-medium border-t pt-2">
+                          Total Duration: {formatDuration(bookingData.totalDuration)}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2 text-sm">
+                        <User className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+                        <span>{getServicesDisplay()}</span>
+                      </div>
+                    )}
                     <div className="flex items-center gap-2 text-sm">
                       <Calendar className="h-4 w-4 text-gray-500 dark:text-gray-400" />
-                      <span>{formatDate(bookingDetails.date)}</span>
+                      <span>{formatDate(getDate())}</span>
                     </div>
                     <div className="flex items-center gap-2 text-sm">
                       <Clock className="h-4 w-4 text-gray-500 dark:text-gray-400" />
-                      <span>{bookingDetails.time}</span>
+                      <span>{getTime()}</span>
                     </div>
                   </div>
                 </div>
@@ -188,7 +273,7 @@ export default function BookingConfirmPage() {
                 <div className="border-t dark:border-gray-700 pt-4">
                   <div className="flex justify-between items-center text-lg font-semibold">
                     <span>Total</span>
-                    <span>${bookingDetails.price}</span>
+                    <span>${getTotalPrice()}</span>
                   </div>
                 </div>
 
@@ -279,7 +364,7 @@ export default function BookingConfirmPage() {
                     </div>
                   </div>
 
-                  <Link href={`/booking/payment?provider=${bookingDetails.provider}&service=${bookingDetails.service}&date=${bookingDetails.date}&time=${bookingDetails.time}&price=${bookingDetails.price}`}>
+                  <Link href={`/booking/payment?provider=${encodeURIComponent(getProviderName())}&service=${encodeURIComponent(getServicesDisplay())}&date=${getDate()}&time=${encodeURIComponent(getTime())}&price=${getTotalPrice()}`}>
                     <Button 
                       className="w-full bg-gradient-to-r from-orange-500 to-red-400 hover:from-orange-600 hover:to-red-500"
                     >
