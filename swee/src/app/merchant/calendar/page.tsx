@@ -1,21 +1,22 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Calendar as CalendarIcon, Clock, User, Mail, CheckCircle, XCircle, AlertCircle, ChevronDown, List, Grid } from 'lucide-react';
-import { Calendar, dateFnsLocalizer } from 'react-big-calendar';
-import { format, parse, startOfWeek, getDay, addMinutes } from 'date-fns';
+import { Calendar as CalendarIcon, Clock, User, Mail, CheckCircle, XCircle, AlertCircle, ChevronDown, List, Grid, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Calendar, dateFnsLocalizer, NavigateAction } from 'react-big-calendar';
+import { format, parse, startOfWeek, getDay, addMonths, addDays, addWeeks, subMonths, subDays, subWeeks } from 'date-fns';
 import { enUS } from 'date-fns/locale';
 import { useTheme } from '@/contexts/ThemeContext';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import './calendar-dark.css';
 import './calendar-text-fix.css';
 import './view-toggle.css';
+import './calendar-navigation.css';
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -71,6 +72,7 @@ export default function MerchantCalendar() {
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [viewMode, setViewMode] = useState<'calendar' | 'list'>('calendar');
   const [currentView, setCurrentView] = useState<'month' | 'week' | 'day'>('month');
+  const [currentDate, setCurrentDate] = useState(new Date());
   
   // Generate dummy bookings if none exist
   const generateDummyBookings = () => {
@@ -119,6 +121,31 @@ export default function MerchantCalendar() {
     }
     
     return dummyBookings;
+  };
+
+  // Navigation handlers
+  const navigateToday = () => {
+    setCurrentDate(new Date());
+  };
+
+  const navigatePrevious = () => {
+    if (currentView === 'month') {
+      setCurrentDate(prev => subMonths(prev, 1));
+    } else if (currentView === 'week') {
+      setCurrentDate(prev => subWeeks(prev, 1));
+    } else if (currentView === 'day') {
+      setCurrentDate(prev => subDays(prev, 1));
+    }
+  };
+
+  const navigateNext = () => {
+    if (currentView === 'month') {
+      setCurrentDate(prev => addMonths(prev, 1));
+    } else if (currentView === 'week') {
+      setCurrentDate(prev => addWeeks(prev, 1));
+    } else if (currentView === 'day') {
+      setCurrentDate(prev => addDays(prev, 1));
+    }
   };
 
   useEffect(() => {
@@ -350,6 +377,43 @@ export default function MerchantCalendar() {
         {viewMode === 'calendar' && (
           <Card className="mb-8">
             <CardContent className="p-4">
+              {/* Navigation Controls */}
+              <div className="flex items-center mb-4 justify-between">
+                <div className="flex items-center space-x-2">
+                  <Button 
+                    variant="outline" 
+                    className="rounded-full h-9 px-4 today-button dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700"
+                    onClick={navigateToday}
+                  >
+                    Today
+                  </Button>
+                  <div className="flex items-center space-x-1 ml-2">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="rounded-full w-9 h-9 flex items-center justify-center nav-button"
+                      onClick={navigatePrevious}
+                      aria-label="Previous"
+                    >
+                      <ChevronLeft className="h-5 w-5" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="rounded-full w-9 h-9 flex items-center justify-center nav-button"
+                      onClick={navigateNext}
+                      aria-label="Next"
+                    >
+                      <ChevronRight className="h-5 w-5" />
+                    </Button>
+                  </div>
+                  
+                  <div className="ml-4 text-gray-700 dark:text-gray-200 font-medium">
+                    {format(currentDate, currentView === 'month' ? 'MMMM yyyy' : currentView === 'week' ? "'Week of' MMM d, yyyy" : 'EEEE, MMMM d, yyyy')}
+                  </div>
+                </div>
+              </div>
+              
               <div className="h-[700px]">
                 <Calendar
                   localizer={localizer}
@@ -363,6 +427,8 @@ export default function MerchantCalendar() {
                     day: true
                   }}
                   view={currentView}
+                  date={currentDate}
+                  onNavigate={(date) => setCurrentDate(date)}
                   onView={(newView) => {
                     if (newView === 'month' || newView === 'week' || newView === 'day') {
                       setCurrentView(newView);
