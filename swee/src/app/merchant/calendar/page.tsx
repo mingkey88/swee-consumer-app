@@ -434,6 +434,7 @@ export default function MerchantCalendar() {
                       setCurrentView(newView);
                     }
                   }}
+                  toolbar={false}
                   eventPropGetter={eventStyleGetter}
                   onSelectEvent={(event) => {
                     setSelectedDate(event.start.toISOString().split('T')[0]);
