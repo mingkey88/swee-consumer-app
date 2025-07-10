@@ -61,7 +61,7 @@ export default function ForBusinessPage() {
     { name: "Nail Salon", icon: "💅", color: "bg-purple-100 text-purple-600" },
     { name: "Spa & Wellness", icon: "🧘‍♀️", color: "bg-blue-100 text-blue-600" },
     { name: "Massage Therapy", icon: "💆‍♀️", color: "bg-green-100 text-green-600" },
-    { name: "Barbershop", icon: "✂️", color: "bg-orange-50 text-orange-500" },
+    { name: "Barbershop", icon: "✂️", color: "bg-orange-100 text-orange-600" },
     { name: "Beauty Clinic", icon: "✨", color: "bg-indigo-100 text-indigo-600" },
     { name: "Fitness Studio", icon: "🏋️‍♀️", color: "bg-red-100 text-red-600" },
     { name: "Eyebrow Bar", icon: "👁️", color: "bg-yellow-100 text-yellow-600" }
@@ -122,21 +122,18 @@ export default function ForBusinessPage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-8">
               <Link href="/" className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-gradient-to-r from-orange-300 to-orange-400 rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
                   <span className="text-white font-bold text-sm">S</span>
                 </div>
-                <span className="text-xl font-bold bg-gradient-to-r from-orange-400 to-orange-500 bg-clip-text text-transparent">
+                <span className="text-xl font-bold text-orange-500">
                   Swee
                 </span>
               </Link>
               <nav className="hidden md:flex space-x-6">
-                <Link href="#features" className="text-gray-600 dark:text-gray-300 hover:text-orange-500 dark:hover:text-orange-400">
+                <Link href="#features" className="text-gray-600 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400">
                   Features
                 </Link>
-                <Link href="#pricing" className="text-gray-600 dark:text-gray-300 hover:text-orange-500 dark:hover:text-orange-400">
-                  Pricing
-                </Link>
-                <Link href="#testimonials" className="text-gray-600 dark:text-gray-300 hover:text-orange-500 dark:hover:text-orange-400">
+                <Link href="#testimonials" className="text-gray-600 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400">
                   Reviews
                 </Link>
               </nav>
@@ -156,7 +153,7 @@ export default function ForBusinessPage() {
                 </Button>
               </Link>
               <Link href="/merchant/auth/signup">
-                <Button className="bg-orange-400 hover:bg-orange-500 text-white">
+                <Button className="bg-orange-500 hover:bg-orange-600 text-white">
                   Get Started
                 </Button>
               </Link>
@@ -166,22 +163,22 @@ export default function ForBusinessPage() {
       </header>
 
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-orange-25 to-red-25 dark:from-gray-800 dark:to-gray-900 py-20">
+      <section className="relative bg-gradient-to-br from-orange-100/50 to-red-100/50 dark:from-gray-800 dark:to-gray-900 py-20">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <Badge className="mb-4 bg-orange-50 text-orange-500 dark:bg-orange-900 dark:text-orange-400">
+              <Badge className="mb-4 bg-orange-100 text-orange-600 dark:bg-orange-900 dark:text-orange-400">
                 #1 Trust-Based Platform
               </Badge>
               <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-                The <span className="bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">trust-first</span> platform for beauty & wellness businesses
+                The <span className="bg-gradient-to-r from-orange-500 to-red-400 bg-clip-text text-transparent">trust-first</span> platform for beauty & wellness businesses
               </h1>
               <p className="text-xl text-gray-600 dark:text-gray-300 mb-8">
                 Simple, transparent, and powerful booking software built on trust. No hard-selling, no fake reviews - just genuine connections that grow your business.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 mb-8">
                 <Link href="/merchant/auth/signup">
-                  <Button className="bg-orange-400 hover:bg-orange-500 text-white text-lg px-8 py-3">
+                  <Button className="bg-orange-500 hover:bg-orange-600 text-white text-lg px-8 py-3">
                     Start Free Trial
                     <ArrowRight className="w-5 h-5 ml-2" />
                   </Button>
@@ -228,7 +225,7 @@ export default function ForBusinessPage() {
                       <span className="text-sm text-gray-500 dark:text-gray-400">147 reviews</span>
                     </div>
                   </div>
-                  <Button className="bg-orange-400 hover:bg-orange-500 text-white">
+                  <Button className="bg-orange-500 hover:bg-orange-600 text-white">
                     Book Now
                   </Button>
                 </div>
@@ -244,8 +241,8 @@ export default function ForBusinessPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
               <div key={index} className="text-center">
-                <div className="w-16 h-16 bg-orange-50 dark:bg-orange-900 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <stat.icon className="w-8 h-8 text-orange-500 dark:text-orange-400" />
+                <div className="w-16 h-16 bg-orange-100 dark:bg-orange-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <stat.icon className="w-8 h-8 text-orange-600 dark:text-orange-400" />
                 </div>
                 <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{stat.number}</div>
                 <div className="text-gray-600 dark:text-gray-300">{stat.label}</div>
@@ -270,8 +267,8 @@ export default function ForBusinessPage() {
             {features.map((feature, index) => (
               <Card key={index} className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow">
                 <CardHeader>
-                  <div className="w-12 h-12 bg-orange-50 dark:bg-orange-900 rounded-lg flex items-center justify-center mb-4">
-                    <feature.icon className="w-6 h-6 text-orange-500 dark:text-orange-400" />
+                  <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900 rounded-lg flex items-center justify-center mb-4">
+                    <feature.icon className="w-6 h-6 text-orange-600 dark:text-orange-400" />
                   </div>
                   <CardTitle className="text-gray-900 dark:text-white">{feature.title}</CardTitle>
                 </CardHeader>
@@ -309,7 +306,7 @@ export default function ForBusinessPage() {
       </section>
 
       {/* Business Metrics */}
-      <section className="py-20 bg-gradient-to-br from-orange-25 to-red-25 dark:from-gray-800 dark:to-gray-900">
+      <section className="py-20 bg-gradient-to-br from-orange-100/50 to-red-100/50 dark:from-gray-800 dark:to-gray-900">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
@@ -322,7 +319,7 @@ export default function ForBusinessPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {businessMetrics.map((metric, index) => (
               <div key={index} className="text-center">
-                <div className="text-5xl font-bold text-orange-500 dark:text-orange-400 mb-2">
+                <div className="text-5xl font-bold text-orange-600 dark:text-orange-400 mb-2">
                   {metric.percentage}
                 </div>
                 <div className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
@@ -354,8 +351,8 @@ export default function ForBusinessPage() {
                 <Card key={testimonial.id} className="bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600">
                   <CardContent className="p-6">
                     <div className="flex items-center mb-4">
-                      <div className="w-12 h-12 bg-orange-50 dark:bg-orange-900 rounded-full flex items-center justify-center mr-4">
-                        <span className="text-orange-500 dark:text-orange-400 font-bold">
+                      <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900 rounded-full flex items-center justify-center mr-4">
+                        <span className="text-orange-600 dark:text-orange-400 font-bold">
                           {testimonial.avatar}
                         </span>
                       </div>
@@ -382,7 +379,7 @@ export default function ForBusinessPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-orange-400 to-red-500">
+      <section className="py-20 bg-gradient-to-r from-orange-500/90 to-red-400/90 bg-opacity-90">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
             Ready to grow your business the right way?
@@ -392,12 +389,12 @@ export default function ForBusinessPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/merchant/auth/signup">
-              <Button className="bg-white text-orange-500 hover:bg-gray-50 text-lg px-8 py-3">
+              <Button className="bg-white text-orange-600 hover:bg-gray-50 text-lg px-8 py-3">
                 Start Free Trial
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </Link>
-            <Button variant="outline" className="border-white text-white hover:bg-white hover:text-orange-500 text-lg px-8 py-3">
+            <Button variant="outline" className="border-white text-white hover:bg-white hover:text-orange-600 text-lg px-8 py-3">
               Schedule Demo
             </Button>
           </div>
@@ -413,7 +410,7 @@ export default function ForBusinessPage() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center space-x-2 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-r from-orange-300 to-red-400 rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-red-400 rounded-lg flex items-center justify-center">
                   <span className="text-white font-bold text-sm">S</span>
                 </div>
                 <span className="text-xl font-bold">Swee</span>
