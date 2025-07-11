@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -42,6 +43,7 @@ import {
 import Link from 'next/link';
 
 export default function ProfilePage() {
+  const searchParams = useSearchParams();
   const [isEditing, setIsEditing] = useState(false);
   const [activeSection, setActiveSection] = useState('profile');
   const [profileData, setProfileData] = useState({
@@ -52,6 +54,17 @@ export default function ProfilePage() {
     birthday: '1995-03-15',
     profileImage: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80'
   });
+
+  // Read section from URL parameters
+  useEffect(() => {
+    const section = searchParams.get('section');
+    if (section) {
+      const validSections = ['profile', 'appointments', 'wallet', 'favorites', 'forms', 'orders', 'settings'];
+      if (validSections.includes(section)) {
+        setActiveSection(section);
+      }
+    }
+  }, [searchParams]);
 
   const handleSave = () => {
     console.log('Saving profile data:', profileData);
@@ -717,6 +730,15 @@ export default function ProfilePage() {
                 </button>
               );
             })}
+            
+            {/* Back to Main Page Button */}
+            <Link 
+              href="/"
+              className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors text-gray-300 hover:bg-gray-700 hover:text-white border-t border-gray-700 mt-4 pt-4"
+            >
+              <ArrowLeft className="w-5 h-5" />
+              <span className="font-medium">Back to Main Page</span>
+            </Link>
           </nav>
         </div>
 

@@ -394,7 +394,9 @@ export default function ForBusinessPage() {
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </Link>
-            <Button variant="outline" className="border-white text-white hover:bg-white hover:text-orange-600 text-lg px-8 py-3">
+            <Button 
+              className="bg-gray-900/20 backdrop-blur-sm border-2 border-white text-white hover:bg-white hover:text-orange-600 text-lg px-8 py-3 font-bold shadow-xl transition-all duration-200"
+            >
               Schedule Demo
             </Button>
           </div>

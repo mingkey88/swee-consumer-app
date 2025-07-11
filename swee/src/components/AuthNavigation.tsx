@@ -127,7 +127,7 @@ export default function AuthNavigation() {
     );
   }
 
-  // Regular authenticated user (or mock user for demo)
+  // Regular authenticated user (or mock user for demo) 
   if (session || true) { // Show mock user for demonstration
     return (
       <div className="flex items-center space-x-4">
@@ -164,43 +164,43 @@ export default function AuthNavigation() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Link href="/profile">
+              <Link href="/profile?section=profile">
                 <User className="mr-2 h-4 w-4" />
                 <span>Profile</span>
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <Link href="/appointments">
+              <Link href="/profile?section=appointments">
                 <Calendar className="mr-2 h-4 w-4" />
                 <span>Appointments</span>
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <Link href="/wallet">
+              <Link href="/profile?section=wallet">
                 <CreditCard className="mr-2 h-4 w-4" />
                 <span>Wallet</span>
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <Link href="/favorites">
+              <Link href="/profile?section=favorites">
                 <Heart className="mr-2 h-4 w-4" />
                 <span>Favorites</span>
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <Link href="/forms">
+              <Link href="/profile?section=forms">
                 <FileText className="mr-2 h-4 w-4" />
                 <span>Forms</span>
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <Link href="/orders">
+              <Link href="/profile?section=orders">
                 <ShoppingBag className="mr-2 h-4 w-4" />
                 <span>Product orders</span>
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <Link href="/settings">
+              <Link href="/profile?section=settings">
                 <Settings className="mr-2 h-4 w-4" />
                 <span>Settings</span>
               </Link>
