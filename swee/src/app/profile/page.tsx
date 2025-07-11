@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { 
   DropdownMenu, 
@@ -45,6 +46,7 @@ import Link from 'next/link';
 export default function ProfilePage() {
   const searchParams = useSearchParams();
   const [isEditing, setIsEditing] = useState(false);
+  const [isEditingAddress, setIsEditingAddress] = useState(false);
   const [activeSection, setActiveSection] = useState('profile');
   const [profileData, setProfileData] = useState({
     firstName: 'Bella',
@@ -54,6 +56,19 @@ export default function ProfilePage() {
     birthday: '1995-03-15',
     profileImage: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80'
   });
+
+  const [addressData, setAddressData] = useState({
+    homeAddress: '123 Marina Bay, Singapore 018956',
+    workAddress: '456 Orchard Road, Singapore 238863'
+  });
+
+  const [paymentMethods, setPaymentMethods] = useState([
+    { id: 1, type: 'Credit Card', last4: '4532', brand: 'Visa', isDefault: true },
+    { id: 2, type: 'Credit Card', last4: '8901', brand: 'Mastercard', isDefault: false },
+    { id: 3, type: 'Digital Wallet', last4: '', brand: 'PayNow', isDefault: false }
+  ]);
+
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(1);
 
   // Read section from URL parameters
   useEffect(() => {
@@ -77,6 +92,22 @@ export default function ProfilePage() {
 
   const handleInputChange = (field: string, value: string) => {
     setProfileData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const handleAddressSave = () => {
+    console.log('Saving address data:', addressData);
+    setIsEditingAddress(false);
+  };
+
+  const handleAddressCancel = () => {
+    setIsEditingAddress(false);
+  };
+
+  const handleAddressChange = (field: string, value: string) => {
+    setAddressData(prev => ({
       ...prev,
       [field]: value
     }));
@@ -300,7 +331,27 @@ export default function ProfilePage() {
       {/* My Addresses Section */}
       <Card className="bg-gray-800 border-gray-700">
         <CardHeader>
-          <CardTitle className="text-xl text-white">My addresses</CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-xl text-white">My addresses</CardTitle>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsEditingAddress(!isEditingAddress)}
+              className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
+            >
+              {isEditingAddress ? (
+                <>
+                  <X className="w-4 h-4 mr-2" />
+                  Cancel
+                </>
+              ) : (
+                <>
+                  <Edit2 className="w-4 h-4 mr-2" />
+                  Edit Addresses
+                </>
+              )}
+            </Button>
+          </div>
         </CardHeader>
         <CardContent className="p-6">
           <div className="space-y-4">
@@ -309,9 +360,18 @@ export default function ProfilePage() {
                 <div className="w-10 h-10 bg-gray-600 rounded-full flex items-center justify-center">
                   <MapPin className="w-5 h-5 text-gray-400" />
                 </div>
-                <div>
+                <div className="flex-1">
                   <p className="font-medium text-white">Home</p>
-                  <p className="text-sm text-gray-400">Add a home address</p>
+                  {isEditingAddress ? (
+                    <Input
+                      value={addressData.homeAddress}
+                      onChange={(e) => handleAddressChange('homeAddress', e.target.value)}
+                      className="bg-gray-600 border-gray-500 text-white mt-2"
+                      placeholder="Enter home address"
+                    />
+                  ) : (
+                    <p className="text-sm text-gray-400">{addressData.homeAddress || "Add a home address"}</p>
+                  )}
                 </div>
               </div>
             </div>
@@ -321,17 +381,40 @@ export default function ProfilePage() {
                 <div className="w-10 h-10 bg-gray-600 rounded-full flex items-center justify-center">
                   <Building2 className="w-5 h-5 text-gray-400" />
                 </div>
-                <div>
+                <div className="flex-1">
                   <p className="font-medium text-white">Work</p>
-                  <p className="text-sm text-gray-400">Add a work address</p>
+                  {isEditingAddress ? (
+                    <Input
+                      value={addressData.workAddress}
+                      onChange={(e) => handleAddressChange('workAddress', e.target.value)}
+                      className="bg-gray-600 border-gray-500 text-white mt-2"
+                      placeholder="Enter work address"
+                    />
+                  ) : (
+                    <p className="text-sm text-gray-400">{addressData.workAddress || "Add a work address"}</p>
+                  )}
                 </div>
               </div>
             </div>
 
-            <Button variant="outline" className="w-full justify-start border-gray-600 text-gray-300 hover:bg-gray-700">
-              <Plus className="w-4 h-4 mr-2" />
-              Add Address
-            </Button>
+            {isEditingAddress && (
+              <div className="flex space-x-3 pt-4">
+                <Button onClick={handleAddressSave} className="bg-orange-500 hover:bg-orange-600">
+                  <Save className="w-4 h-4 mr-2" />
+                  Save Addresses
+                </Button>
+                <Button variant="outline" onClick={handleAddressCancel} className="border-gray-600 text-gray-300 hover:bg-gray-700">
+                  Cancel
+                </Button>
+              </div>
+            )}
+
+            {!isEditingAddress && (
+              <Button variant="outline" className="w-full justify-start border-gray-600 text-gray-300 hover:bg-gray-700">
+                <Plus className="w-4 h-4 mr-2" />
+                Add Address
+              </Button>
+            )}
           </div>
         </CardContent>
       </Card>
@@ -345,9 +428,11 @@ export default function ProfilePage() {
           <h1 className="text-3xl font-bold text-white mb-2">Appointments</h1>
           <p className="text-gray-400">Manage your appointments and bookings</p>
         </div>
-        <Button className="bg-orange-500 hover:bg-orange-600">
-          <Calendar className="w-4 h-4 mr-2" />
-          Book New Appointment
+        <Button asChild className="bg-orange-500 hover:bg-orange-600">
+          <Link href="/search">
+            <Calendar className="w-4 h-4 mr-2" />
+            Book New Appointment
+          </Link>
         </Button>
       </div>
       
@@ -360,7 +445,7 @@ export default function ProfilePage() {
             <h3 className="text-xl font-semibold text-white mb-2">No appointments yet</h3>
             <p className="text-gray-400 mb-6">Book your first appointment to get started</p>
             <Button asChild className="bg-orange-500 hover:bg-orange-600">
-              <Link href="/">Browse Services</Link>
+              <Link href="/search">Browse Services</Link>
             </Button>
           </div>
         </CardContent>
@@ -375,21 +460,81 @@ export default function ProfilePage() {
           <h1 className="text-3xl font-bold text-white mb-2">Wallet</h1>
           <p className="text-gray-400">Manage your payment methods and billing</p>
         </div>
-        <Button className="bg-orange-500 hover:bg-orange-600">
-          <CreditCard className="w-4 h-4 mr-2" />
-          Add Payment Method
-        </Button>
       </div>
       
       <Card className="bg-gray-800 border-gray-700">
-        <CardContent className="p-12">
-          <div className="text-center">
-            <div className="w-16 h-16 bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
-              <CreditCard className="w-8 h-8 text-gray-400" />
+        <CardHeader>
+          <CardTitle className="text-white">Payment Methods</CardTitle>
+        </CardHeader>
+        <CardContent className="p-6">
+          <div className="space-y-4">
+            {paymentMethods.map((method) => (
+              <div 
+                key={method.id}
+                className={`p-4 border rounded-lg cursor-pointer transition-colors ${
+                  selectedPaymentMethod === method.id 
+                    ? 'border-orange-500 bg-orange-500/10' 
+                    : 'border-gray-600 bg-gray-700 hover:bg-gray-600'
+                }`}
+                onClick={() => setSelectedPaymentMethod(method.id)}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-gray-600 rounded-full flex items-center justify-center">
+                      <CreditCard className="w-5 h-5 text-gray-400" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-white">
+                        {method.brand} {method.last4 && `•••• ${method.last4}`}
+                      </p>
+                      <p className="text-sm text-gray-400">{method.type}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    {method.isDefault && (
+                      <Badge className="bg-orange-500 text-white">Default</Badge>
+                    )}
+                    <div className={`w-4 h-4 rounded-full border-2 ${
+                      selectedPaymentMethod === method.id 
+                        ? 'border-orange-500 bg-orange-500' 
+                        : 'border-gray-400'
+                    }`}>
+                      {selectedPaymentMethod === method.id && (
+                        <div className="w-full h-full rounded-full bg-orange-500"></div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Payment Summary */}
+      <Card className="bg-gray-800 border-gray-700">
+        <CardHeader>
+          <CardTitle className="text-white">Payment Summary</CardTitle>
+        </CardHeader>
+        <CardContent className="p-6">
+          <div className="space-y-3">
+            <div className="flex justify-between items-center">
+              <span className="text-gray-400">Selected Payment Method:</span>
+              <span className="text-white font-medium">
+                {paymentMethods.find(m => m.id === selectedPaymentMethod)?.brand}{' '}
+                {paymentMethods.find(m => m.id === selectedPaymentMethod)?.last4 && 
+                  `•••• ${paymentMethods.find(m => m.id === selectedPaymentMethod)?.last4}`
+                }
+              </span>
             </div>
-            <h3 className="text-xl font-semibold text-white mb-2">No payment methods</h3>
-            <p className="text-gray-400 mb-6">Add a payment method to book appointments</p>
-            <Button className="bg-orange-500 hover:bg-orange-600">Add Payment Method</Button>
+            <div className="flex justify-between items-center">
+              <span className="text-gray-400">Saved Cards:</span>
+              <span className="text-white">{paymentMethods.length}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-gray-400">Auto-Pay:</span>
+              <span className="text-green-400">Enabled</span>
+            </div>
           </div>
         </CardContent>
       </Card>
