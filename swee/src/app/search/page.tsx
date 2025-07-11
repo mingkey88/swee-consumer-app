@@ -465,14 +465,25 @@ export default function SearchPage() {
               {selectedProvider ? (
                 /* Selected Provider Detail */
                 <Card className="h-fit bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                  <div className="aspect-video bg-gray-200 dark:bg-gray-700 rounded-t-lg overflow-hidden">
-                    <Image 
-                      src={selectedProvider.image} 
-                      alt={selectedProvider.name}
-                      width={400}
-                      height={225}
-                      className="w-full h-full object-cover"
-                    />
+                  <div className="relative">
+                    <div className="aspect-video bg-gray-200 dark:bg-gray-700 rounded-t-lg overflow-hidden">
+                      <Image 
+                        src={selectedProvider.image} 
+                        alt={selectedProvider.name}
+                        width={400}
+                        height={225}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    {/* Back Button */}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setSelectedProvider(null)}
+                      className="absolute top-2 right-2 h-8 w-8 rounded-full bg-white/80 dark:bg-gray-800/80 hover:bg-white dark:hover:bg-gray-700 backdrop-blur-sm"
+                    >
+                      <span className="text-gray-600 dark:text-gray-300 font-medium">×</span>
+                    </Button>
                   </div>
                   <CardContent className="p-6">
                     <div className="flex items-start justify-between mb-4">
@@ -682,7 +693,7 @@ export default function SearchPage() {
               No results found
             </h3>
             <p className="text-gray-600 dark:text-gray-300 mb-4">
-              Try adjusting your search or filters to find what you're looking for.
+              Try adjusting your search or filters to find what you&apos;re looking for.
             </p>
             <Button 
               variant="outline" 

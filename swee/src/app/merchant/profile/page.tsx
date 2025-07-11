@@ -16,8 +16,7 @@ import {
   Phone, 
   Mail, 
   Globe, 
-  MapPin,
-  Star
+  MapPin
 } from 'lucide-react';
 
 interface MerchantProfile {
@@ -62,7 +61,8 @@ export default function MerchantProfile() {
 
       const data = await response.json();
       setProfile(data);
-    } catch (err) {
+    } catch (error) {
+      console.error('Profile fetch error:', error);
       setError('Failed to load profile data');
     } finally {
       setLoading(false);
@@ -91,7 +91,8 @@ export default function MerchantProfile() {
       }
 
       setSuccess('Profile updated successfully!');
-    } catch (err) {
+    } catch (error) {
+      console.error('Profile update error:', error);
       setError('Failed to update profile. Please try again.');
     } finally {
       setSaving(false);
@@ -121,25 +122,29 @@ export default function MerchantProfile() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Header */}
-      <header className="bg-white dark:bg-gray-800 shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
+      {/* Merchant Profile Header */}
+      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center">
+                <span className="text-white font-bold text-lg">B</span>
+              </div>
+              <div>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                  {profile?.name || 'Bella Chen'}
+                </h2>
+                <p className="text-sm text-gray-600 dark:text-gray-300">Business Owner</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-2">
               <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
                 Business Profile
               </h1>
             </div>
-            {profile && (
-              <div className="flex items-center space-x-2">
-                <Star className="w-5 h-5 text-yellow-400" />
-                <span className="text-lg font-semibold">{profile.trustScore.toFixed(1)}</span>
-                <span className="text-sm text-gray-500">Trust Score</span>
-              </div>
-            )}
           </div>
         </div>
-      </header>
+      </div>
 
       {/* Main Content */}
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -326,8 +331,13 @@ export default function MerchantProfile() {
               <CardContent>
                 {profile && (
                   <div className="text-center">
-                    <div className="text-4xl font-bold text-green-600 mb-2">
-                      {profile.trustScore.toFixed(1)}
+                    <div className="flex items-center justify-center space-x-2 mb-2">
+                      <div className="text-4xl font-bold text-green-600">
+                        {profile.trustScore.toFixed(1)}
+                      </div>
+                      <div className="w-5 h-5 text-yellow-400">
+                        ⭐
+                      </div>
                     </div>
                     <p className="text-sm text-gray-500 mb-4">
                       Based on customer reviews and platform metrics
