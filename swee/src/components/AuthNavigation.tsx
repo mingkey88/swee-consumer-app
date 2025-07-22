@@ -36,12 +36,6 @@ export default function AuthNavigation() {
   const { data: session, status } = useSession();
   const { isAdmin, adminUser, logoutAdmin } = useAdmin();
 
-  // Mock user for demonstration (remove this in production)
-  const mockUser = {
-    name: "Bella Chen",
-    email: "bella.chen@example.com",
-    image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80"
-  };
 
   if (status === 'loading') {
     return (
@@ -127,8 +121,8 @@ export default function AuthNavigation() {
     );
   }
 
-  // Regular authenticated user (or mock user for demo) 
-  if (session || true) { // Show mock user for demonstration
+  // Regular authenticated user
+  if (session) {
     return (
       <div className="flex items-center space-x-4">
         <Link href="/for-business">
@@ -142,11 +136,11 @@ export default function AuthNavigation() {
               <div className="flex items-center space-x-2">
                 <Avatar className="h-8 w-8">
                   <AvatarImage 
-                    src={mockUser.image} 
-                    alt={mockUser.name} 
+                    src={session.user?.image || undefined} 
+                    alt={session.user?.name || 'User'} 
                   />
                   <AvatarFallback className="bg-orange-100 text-orange-600 dark:bg-orange-900 dark:text-orange-400">
-                    B
+                    {session.user?.name?.charAt(0) || session.user?.email?.charAt(0) || 'U'}
                   </AvatarFallback>
                 </Avatar>
                 <ChevronDown className="h-4 w-4 text-gray-500 dark:text-gray-400" />
@@ -156,9 +150,9 @@ export default function AuthNavigation() {
           <DropdownMenuContent className="w-64" align="end" forceMount>
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium leading-none">{mockUser.name}</p>
+                <p className="text-sm font-medium leading-none">{session.user?.name || 'User'}</p>
                 <p className="text-xs leading-none text-muted-foreground">
-                  {mockUser.email}
+                  {session.user?.email}
                 </p>
               </div>
             </DropdownMenuLabel>
@@ -208,7 +202,12 @@ export default function AuthNavigation() {
             <DropdownMenuSeparator />
             <DropdownMenuItem
               className="cursor-pointer"
-              onClick={() => signOut({ callbackUrl: '/' })}
+              onClick={async () => {
+                await signOut({ 
+                  callbackUrl: '/',
+                  redirect: true 
+                });
+              }}
             >
               <LogOut className="mr-2 h-4 w-4" />
               <span>Log out</span>

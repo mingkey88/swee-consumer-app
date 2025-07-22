@@ -1,11 +1,15 @@
 'use client';
 
-import { signIn, getProviders } from 'next-auth/react';
-import { useSearchParams } from 'next/navigation';
+import { signIn, getProviders, getSession } from 'next-auth/react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Github, AlertCircle, ArrowLeft, Sun, Moon } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Github, AlertCircle, ArrowLeft, Sun, Moon, Loader2 } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import Link from 'next/link';
 
@@ -19,13 +23,43 @@ interface Provider {
 
 export default function SignInPage() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const [providers, setProviders] = useState<Record<string, Provider>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('password123');
   const { darkMode, toggleDarkMode } = useTheme();
   
   const callbackUrl = searchParams.get('callbackUrl') || '/';
   const errorType = searchParams.get('error');
+
+  const testUsers = [
+    { 
+      name: 'Bella Chen', 
+      email: 'merchant@example.com', 
+      description: 'Hair Services, Professional, $80-120',
+      image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=150&q=80'
+    },
+    { 
+      name: 'Jessica Wong', 
+      email: 'jessica.wong@email.com', 
+      description: 'Facial Treatments, Student, $50-80',
+      image: 'https://images.unsplash.com/photo-1494790108755-2616b612b5bc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=150&q=80'
+    },
+    { 
+      name: 'Sarah Chen', 
+      email: 'sarah.chen@email.com', 
+      description: 'Multiple Services, Executive, $120-200',
+      image: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=150&q=80'
+    },
+    { 
+      name: 'Maria Rodriguez', 
+      email: 'maria.rodriguez@email.com', 
+      description: 'Brows & Lashes, Creative, $30-60',
+      image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=150&q=80'
+    },
+  ];
 
   useEffect(() => {
     const loadProviders = async () => {
@@ -55,10 +89,57 @@ export default function SignInPage() {
     }
   }, [errorType]);
 
-  const handleEmailSignIn = async (e: React.FormEvent) => {
+  const handleCredentialsSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Email sign-in disabled for Google OAuth only setup
-    setError('Email sign-in is not available. Please use Google OAuth.');
+    setIsLoading(true);
+    setError('');
+
+    try {
+      const result = await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
+      });
+
+      if (result?.error) {
+        setError('Invalid email or password');
+      } else {
+        const session = await getSession();
+        if (session) {
+          router.push(callbackUrl);
+        }
+      }
+    } catch (err) {
+      setError('Sign in failed. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleTestUserSignIn = async (testEmail: string) => {
+    setIsLoading(true);
+    setError('');
+
+    try {
+      const result = await signIn('credentials', {
+        email: testEmail,
+        password: 'password123',
+        redirect: false,
+      });
+
+      if (result?.error) {
+        setError('Failed to sign in as test user');
+      } else {
+        const session = await getSession();
+        if (session) {
+          router.push(callbackUrl);
+        }
+      }
+    } catch (err) {
+      setError('Sign in failed. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleProviderSignIn = async (providerId: string) => {
@@ -108,6 +189,93 @@ export default function SignInPage() {
               <p className="text-red-800 dark:text-red-300 text-sm">{error}</p>
             </div>
           )}
+
+          {/* Test Users Section */}
+          <div className="space-y-4">
+            <div className="text-center">
+              <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-2">
+                🤖 Quick Test Sign-In (AI Assistant Demo)
+              </h3>
+              <p className="text-xs text-gray-600 dark:text-gray-400">
+                Try different AI personalities with pre-populated data
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 gap-2">
+              {testUsers.map((user, index) => (
+                <Button
+                  key={index}
+                  variant="outline"
+                  onClick={() => handleTestUserSignIn(user.email)}
+                  disabled={isLoading}
+                  className="justify-start h-auto p-3 text-left hover:bg-orange-50 dark:hover:bg-orange-900/20"
+                >
+                  <div className="flex items-center space-x-3 w-full">
+                    <Avatar className="h-10 w-10">
+                      <AvatarImage src={user.image} alt={user.name} />
+                      <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                    <div className="flex flex-col items-start flex-1">
+                      <div className="font-medium text-sm">{user.name}</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                        {user.description}
+                      </div>
+                    </div>
+                  </div>
+                </Button>
+              ))}
+            </div>
+          </div>
+
+          <Separator />
+
+          {/* Manual Sign In */}
+          <form onSubmit={handleCredentialsSignIn} className="space-y-4">
+            <div className="text-center text-sm text-gray-600 dark:text-gray-400 mb-4">
+              Or sign in manually
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="Enter email address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                placeholder="Enter password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                Demo password: password123
+              </p>
+            </div>
+            <Button 
+              type="submit" 
+              className="w-full bg-gradient-to-r from-orange-500 to-red-400 hover:from-orange-600 hover:to-red-500"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Signing in...
+                </>
+              ) : (
+                'Sign In'
+              )}
+            </Button>
+          </form>
+
+          <Separator />
 
           {/* OAuth Providers */}
           <div className="space-y-3">

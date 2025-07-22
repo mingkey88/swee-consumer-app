@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Search, MapPin, Calendar, Star, Heart, Sparkles, Moon, Sun } from 'lucide-react';
 import AuthNavigation from '@/components/AuthNavigation';
-import AISearch from '@/components/AISearch';
+import AISearchEnhanced from '@/components/AISearchEnhanced';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAdmin } from '@/hooks/useAdmin';
 import Link from 'next/link';
@@ -517,7 +517,7 @@ export default function Home() {
       
       {/* AI Search Modal */}
       {showAISearch && (
-        <AISearch onClose={() => setShowAISearch(false)} />
+        <AISearchEnhanced onClose={() => setShowAISearch(false)} />
       )}
     </div>
   );
